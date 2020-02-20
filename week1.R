@@ -1,8 +1,8 @@
-########################################
-# Intro to Probability and Statistics  #
-# Week 01 - Introduction to R          #
-# Umberto Mignozzetti                  #
-########################################
+##########################################
+## Intro to Probability and Statistics  ##
+## Week 01 - Introduction to R          ##
+## Umberto Mignozzetti                  ##
+##########################################
 
 ## Basics
 
@@ -71,7 +71,7 @@ getwd()
 # are commands. They are instructions about what to
 # do with those boxes. **getwd()** is a function.
 # We know that because of the parenthesis!
-setwd("Desktop/intro-")
+setwd("Desktop/intro-prob-stat-FGV-master/")
 
 ## Geting help!
 
@@ -265,7 +265,7 @@ library("swirl")
 install.packages("devtools")
 install_course_github("kosukeimai", "qss-swirl")
 
-## Assignment: load **swirl** and do the INTRO1!
+## Assignment: load **swirl** and do the INTRO1 and INTRO2!
 
 # To load
 swirl()
