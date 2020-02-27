@@ -24,15 +24,9 @@ seq(2002, 2018, 4)
 x <- c(1,2,3)
 x
 
-# Other boxes may be comprised of texts:
-y <- c('Umberto is the boss', 'Cedric is the follower', 
-       'Resemblance to actual persons is purely coincidental.')
-y
-
 # How to know which boxes we are talking about?
 # Function **class**:
 class(x)
-class(y)
 
 ## Loading files
 
@@ -74,7 +68,6 @@ library("swirl")
 # called 'PErisk' and find out what is it about.
 
 # Recap
-
 Inf
 exp(-Inf)
 log(0)
