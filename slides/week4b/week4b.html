@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Week 4 - Descriptive Stats and Observation Studies</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Umberto Mignozzetti" />
+    <link href="week4b_files/remark-css/default.css" rel="stylesheet" />
+    <link href="week4b_files/remark-css/metropolis.css" rel="stylesheet" />
+    <link href="week4b_files/remark-css/metropolis-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Week 4 - Descriptive Stats and Observation Studies
+## Causal Inference without Randomization
+<html>
+<div style="float:left">
+
+</div>
+<hr color='#EB811B' size=1px width=800px>
+</html>
+### Umberto Mignozzetti
+### March 12
+
+---
+
+
+
+
+&lt;style&gt;
+
+.remark-slide-number {
+  position: inherit;
+}
+
+.remark-slide-number .progress-bar-container {
+  position: absolute;
+  bottom: 0;
+  height: 6px;
+  display: block;
+  left: 0;
+  right: 0;
+}
+
+.remark-slide-number .progress-bar {
+  height: 100%;
+  background-color: #EB811B;
+}
+
+.orange {
+  color: #EB811B;
+}
+&lt;/style&gt;
+
+# Today's Agenda
+
+.font150[
+* Quantiles
+
+* Standard deviation
+
+* Observational studies vs RCTs (QSS 2.5-2.6)
+
+* Differences in Differences
+
+* Leader assassination DiD 
+
+* Internal and external validity
+
+* Replication crisis
+
+]
+---
+
+# Revision
+
+.font150[
+* What is the fundamental problem of causal inference?
+
+* How can we (try to) solve that problem?
+]
+--
+.font150[
+* .orange[Randomization!]
+]
+
+---
+
+# Randomization
+
+.font150[
+* Randomization ensures the treatment .orange[is not correlated] with any other variable
+
+* Randomization .orange[generates balance] between treatment and control groups 
+
+* Treatment and control groups .orange[identical on average]
+
+* Allows us to estimate the average treatment effect simply as a .orange[difference in means]: `\(\frac{1}{n} \sum_{i=1}^n \{Y_i(1) - Y_i(0)\}\)`
+]
+
+---
+
+# Social Pressure Example
+
+.font150[
+* August 2006 Primary State-wide Election in Michigan
+
+* Send postcards with different, randomly-assigned messages
+  - no message (control group)
+  - civic duty message
+  - "you are being studied" message (Hawthorne effect)
+  - neighbourhood social pressure message
+]
+
+---
+
+# Social Pressure Example
+
+
+
+
+```r
+tapply(social$yearofbirth, social$messages, mean) # Year of Birth
+```
+
+```
+## Civic Duty    Control  Hawthorne  Neighbors 
+*##   1956.341   1956.186   1956.295   1956.147
+```
+
+```r
+tapply(social$hhsize, social$messages, mean) # Household size
+```
+
+```
+## Civic Duty    Control  Hawthorne  Neighbors 
+*##   2.189126   2.183667   2.180138   2.187770
+```
+
+```r
+tapply(social$primary2006, social$messages, mean) # Outcome
+```
+
+```
+## Civic Duty    Control  Hawthorne  Neighbors 
+*##  0.3145377  0.2966383  0.3223746  0.3779482
+```
+
+```r
+tapply(social$primary2006, social$messages, mean)[-2] -
+    mean(social$primary2006[social$messages == "Control"]) # SATE for each group
+```
+
+```
+## Civic Duty  Hawthorne  Neighbors 
+*## 0.01789934 0.02573631 0.08130991
+```
+---
+
+# Quantiles
+
+.font150[
+* Sometimes it is useful to look at the distribution of a given variable
+
+* We can split a variable in many ways:
+	- Quartiles
+	- Quantiles
+	- Percentiles
+
+* Which quantile is the median?
+]
+---
+
+# Quantiles
+
+.font150[
+* What is the median of {2, 5, 6, 10}?
+
+* What is the median of {1, 2, 3, 4, 20}?
+
+* Interquartile range (IQR): the difference between the 75th and the 25th percentile    
+]
+
+---
+
+# Standard Deviation
+
+.font150[
+* Average distance of each data point to the mean
+
+* `\(SD = (\sqrt{\frac{1}{n} \sum^{N}_{i = 1} (x_{i} - \bar{x})^{2}})\)`
+]
+--
+
+.font150[
+* where `\(\bar{x}\)` indicates the sample mean, that is, `\(\bar{x} = \frac{1}{n} \sum^{N}_{i = 1} x_{i}\)`, and `\(n\)` is the sample size 
+
+* Almost all data entries are located within 2 or 3 standard deviations from the mean
+]
+---
+
+# R Examples
+
+
+
+
+```r
+median(leaders$age)
+```
+
+```
+## [1] 52.5
+```
+
+```r
+IQR(leaders$age)
+```
+
+```
+## [1] 16.75
+```
+
+```r
+quantile(leaders$age)
+```
+
+```
+##    0%   25%   50%   75%  100% 
+## 18.00 45.00 52.50 61.75 81.00
+```
+
+```r
+quantile(leaders$age, probs = seq(0, 1, by = 0.1)) # deciles
+```
+
+```
+##   0%  10%  20%  30%  40%  50%  60%  70%  80%  90% 100% 
+## 18.0 39.0 43.0 47.0 50.0 52.5 57.0 60.0 64.0 70.0 81.0
+```
+
+```r
+quantile(leaders$age, probs = c(.34, .55, .93)) # 34th, 55th, 93th percentiles
+```
+
+```
+## 34% 55% 93% 
+##  48  55  71
+```
+---
+
+# R Examples
+
+
+```r
+mean(leaders$age)
+```
+
+```
+## [1] 53.524
+```
+
+```r
+sd(leaders$age)
+```
+
+```
+## [1] 12.03982
+```
+
+```r
+summary(leaders$age)
+```
+
+```
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   18.00   45.00   52.50   53.52   61.75   81.00
+```
+---
+
+# Observational Studies
+
+.font150[
+* Often, it is unethical or infeasible to randomize the treatment. 
+  - Smoking and cancer 
+  - Gender and salary
+  - Death penalty and crime
+
+* .orange[Observational data]: the treatment is naturally assigned
+]
+
+---
+
+# Observational Studies 
+
+.font150[
+* Why is it harder to make causal inference with observational data? 
+]
+
+--
+.font150[
+* .orange[Confounders/confounding variables:] variables that are associated both with the treatment and the outcome 
+]
+--
+
+.font150[
+* If the treatment is not independent from pre-treatment variables, we cannot be sure about what causes what
+]
+
+---
+
+# Examples of Confounders:
+
+.font150[
+* Are incumbents more likely to win elections?
+  - Maybe, but they also receive more campaign donations
+]
+--
+
+.font150[
+*  Are democratic countries more peaceful than authoritarian ones?
+   - Maybe, but they also tend to be richer
+]
+
+--
+
+.font150[
+* .orange[Selection bias]: groups are not directly comparable
+]
+
+---
+
+# Observation Studies
+
+.font150[
+* .orange[Pre-treatment variables] have to be .orange[controlled for], that is, _held constant_ in the analysis
+
+* .orange[Statistical control]: we use statistical methods to create balance between treatment and control and emulate an experiment as best as we can. E.g:
+  - Instrumental variables (IV)
+  - Regression discontinuity designs (RDD)
+  - Differences-in-differences (DD/DiD/Diff-in-diff)
+]
+
+---
+
+# Differences-in-Differences (DiD)
+
+.font150[
+* Compare trends before and after the treatment across the same units
+
+* Controls for the initial conditions
+
+* Requires data for two time periods (before and after treatment) and at least two units
+
+* .orange[Parallel time trends assumption]
+]
+
+---
+
+# Differences-in-Differences (DiD)
+
+.center[![](ddkosuke.png)]
+
+---
+
+# Minimum Wage and Unemployment
+
+.font120[
+* How does the increase in minimum wage affect unemployment?
+
+* Economists believe the effect is positive: higher wages lead to higher unemployment
+
+* Difficult to randomize minimum wage legislation
+
+* In 1992, NJ minimum wage increased from $4.25 to $5.05...
+
+* ... but neighbouring PA stays at $4.25
+
+* NJ and (eastern) PA are similar, and fast food chains are similar too: wages, prices, products, etc
+
+* [David Card and Alan Krueger (1994)](http://davidcard.berkeley.edu/papers/njmin-aer.pdf) see this change as a natural experiment
+]
+
+---
+
+# Minimum Wage and Unemployment
+
+.center[![](ck.png)]
+
+---
+
+# Minimum Wage and Unemployment
+
+
+```r
+minwage &lt;- read.csv("https://raw.githubusercontent.com/pols1600/pols1600.github.io/master/datasets/causality/minwage.csv")
+str(minwage)
+```
+
+```
+## 'data.frame':	358 obs. of  8 variables:
+##  $ chain     : Factor w/ 4 levels "burgerking","kfc",..: 4 4 1 1 2 2 3 1 1 1 ...
+##  $ location  : Factor w/ 5 levels "centralNJ","northNJ",..: 3 3 3 3 3 3 3 3 3 3 ...
+##  $ wageBefore: num  5 5.5 5 5 5.25 5 5 5 5 5.5 ...
+##  $ wageAfter : num  5.25 4.75 4.75 5 5 5 4.75 5 4.5 4.75 ...
+##  $ fullBefore: num  20 6 50 10 2 2 2.5 40 8 10.5 ...
+##  $ fullAfter : num  0 28 15 26 3 2 1 9 7 18 ...
+##  $ partBefore: num  20 26 35 17 8 10 20 30 27 30 ...
+##  $ partAfter : num  36 3 18 9 12 9 25 32 39 10 ...
+```
+
+---
+
+# Minimum Wage and Unemployment
+
+
+```r
+# Subset the data into NJ and PA
+minwageNJ &lt;- subset(minwage, subset = (location != "PA"))
+minwagePA &lt;- subset(minwage, subset = (location == "PA"))
+```
+
+
+```r
+# Compute the proportion of restaurants whose wage is less than $5.05
+mean(minwageNJ$wageBefore &lt; 5.05) # NJ before
+```
+
+```
+*## [1] 0.9106529
+```
+
+```r
+mean(minwageNJ$wageAfter &lt; 5.05) # NJ after
+```
+
+```
+*## [1] 0.003436426
+```
+
+```r
+mean(minwagePA$wageBefore &lt; 5.05) # PA before
+```
+
+```
+*## [1] 0.9402985
+```
+
+```r
+mean(minwagePA$wageAfter &lt; 5.05) # PA after
+```
+
+```
+*## [1] 0.9552239
+```
+
+---
+
+# Minimum Wage and Unemployment
+
+
+```r
+# Are the NJ and PA Restaurants Comparable?
+mean(minwageNJ$wageBefore)
+```
+
+```
+*## [1] 4.609966
+```
+
+```r
+mean(minwagePA$wageBefore)
+```
+
+```
+*## [1] 4.651343
+```
+
+```r
+# Compute the proportion of full-time employees after the increase
+minwageNJ$fullPropBefore &lt;- minwageNJ$fullBefore / (minwageNJ$fullBefore + minwageNJ$partBefore)
+minwagePA$fullPropBefore &lt;- minwagePA$fullBefore / (minwagePA$fullBefore + minwagePA$partBefore)
+mean(minwageNJ$fullPropBefore) # Proportion full-time workers NJ
+```
+
+```
+*## [1] 0.2965262
+```
+
+```r
+mean(minwagePA$fullPropBefore) # Proportion full-time workers PA
+```
+
+```
+*## [1] 0.3099657
+```
+
+---
+
+# Minimum Wage and Unemployment
+
+
+```r
+# Compute the proportion of full-time employees after the increase
+minwageNJ$fullPropAfter &lt;- minwageNJ$fullAfter / (minwageNJ$fullAfter + minwageNJ$partAfter)
+minwagePA$fullPropAfter &lt;- minwagePA$fullAfter / (minwagePA$fullAfter + minwagePA$partAfter)
+mean(minwageNJ$fullPropAfter) # Proportion full-time workers NJ
+```
+
+```
+## [1] 0.320401
+```
+
+```r
+mean(minwagePA$fullPropAfter) # Proportion full-time workers PA
+```
+
+```
+## [1] 0.2722821
+```
+
+---
+
+# Minimum Wage and Unemployment
+
+
+```r
+# Compare NJ before and after the change
+NJdiff &lt;- mean(minwageNJ$fullPropAfter) - mean(minwageNJ$fullPropBefore)
+NJdiff
+```
+
+```
+*## [1] 0.02387474
+```
+.font120[
+However, the region as a whole could have changed too. So we use PA as a control case
+]
+
+
+```r
+# PA before/after difference to control for possible changes over time
+PAdiff &lt;- mean(minwagePA$fullPropAfter) - mean(minwagePA$fullPropBefore)
+PAdiff
+```
+
+```
+*## [1] -0.03768357
+```
+
+```r
+# Difference in difference
+NJdiff - PAdiff
+```
+
+```
+*## [1] 0.06155831
+```
+
+---
+
+# Minimum Wage and Unemployment
+
+.center[![:scale 45%](dd.png)]
+
+.font150[
+* .orange[Parallel trends assumption:] NJ would have followed the same trend as PA had it not received the treatment. However, _we can't test that_.
+]
+
+---
+
+# Animation of DiD
+
+.center[![:scale 60%](did.gif)]
+
+---
+
+class: inverse, center, middle
+
+# Questions?
+
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=720px&gt;&lt;/html&gt; 
+
+---
+
+# Leader Assassination DD
+
+.font150[
+* **Question 5**
+
+* Does successful leader assassination cause democratization? 
+
+* Does successful leader assassination lead countries to war? 
+
+* Answer these questions by analyzing the data.  Be sure to state your assumptions and provide a brief interpretation of the results.]
+---
+
+# Leader Assassination DD
+
+
+```r
+str(leaders)
+```
+
+```
+## 'data.frame':	250 obs. of  11 variables:
+##  $ year          : int  1929 1933 1934 1924 1931 1968 1992 1908 1916 1929 ...
+##  $ country       : Factor w/ 88 levels "Afghanistan",..: 1 1 1 2 2 3 3 4 4 4 ...
+##  $ leadername    : Factor w/ 196 levels "Abdullah Al-Hussein",..: 72 128 77 196 196 27 26 6 46 92 ...
+##  $ age           : int  39 53 50 29 36 41 73 48 76 77 ...
+##  $ politybefore  : num  -6 -6 -6 0 -9 -9 -2 1 2 2 ...
+##  $ polityafter   : num  -6 -7.33 -8 -9 -9 ...
+##  $ interwarbefore: int  0 0 0 0 0 0 0 0 0 0 ...
+##  $ interwarafter : int  0 0 0 0 0 0 0 0 0 0 ...
+##  $ civilwarbefore: int  1 0 0 0 0 0 0 0 0 0 ...
+##  $ civilwarafter : int  0 0 0 0 0 0 1 0 0 0 ...
+##  $ result        : Factor w/ 10 levels "dies between a day and a week",..: 6 3 9 10 6 10 3 7 6 6 ...
+```
+
+```r
+# create success variable
+leaders$success &lt;- ifelse(leaders$result == "dies between a day and a week" |
+                            leaders$result == "dies between a week and a month" |
+                            leaders$result == "dies within a day after the attack" |
+                            leaders$result == "dies, timing unknown",1, 0)
+```
+---
+
+# Leader Assassination DD
+
+
+```r
+# polity score before and after assassination attempt
+diff.pol.succ &lt;- mean(leaders$polityafter[leaders$success == 1]) - 
+                   mean(leaders$politybefore[leaders$success == 1]) # successful 
+
+diff.pol.succ
+```
+
+```
+## [1] -0.05864198
+```
+
+```r
+diff.pol.unsucc &lt;- mean(leaders$polityafter[leaders$success == 0]) - 
+                     mean(leaders$politybefore[leaders$success == 0]) # unsuccessful
+
+diff.pol.unsucc
+```
+
+```
+## [1] -0.1513605
+```
+
+```r
+## difference in differences
+diff.pol.succ - diff.pol.unsucc
+```
+
+```
+## [1] 0.09271857
+```
+---
+
+# Leader Assassination DD
+
+
+```r
+# create variable for warbefore and warafter
+leaders$warbefore &lt;- ifelse(leaders$interwarbefore == 1 |
+                              leaders$civilwarbefore == 1, 1, 0)
+leaders$warafter &lt;- ifelse(leaders$interwarafter == 1 |
+                             leaders$civilwarafter == 1, 1, 0)
+
+## compare war before to war after among successful and unsuccessful
+diff.war.succ &lt;- mean(leaders$warafter[leaders$success == 1]) - 
+                   mean(leaders$warbefore[leaders$success == 1])
+
+diff.war.unsucc &lt;- mean(leaders$warafter[leaders$success == 0]) - 
+                     mean(leaders$warbefore[leaders$success == 0])
+
+diff.war.succ - diff.war.unsucc # difference in differences
+```
+
+```
+## [1] -0.07161754
+```
+
+.font130[
+Using the difference-in-difference approach, we find very little difference in the contries' polity score and in the proportion of countries engaged in war. Leader assassination does not seem to cause countries to democratise or engage in war.]
+---
+
+# Internal and External Validity
+
+.font150[
+* Because of randomization, we know that RCTs have strong _internal validity_
+
+* .orange[Internal validity]: the degree to which we can attribute the results to the treatment and not to other factors
+
+* However, observational studies have greater _external validity_
+
+* .orange[External validity]: the extent to which the results can be generalized 
+]
+
+---
+
+# Replication Crisis
+
+
+.center[![:scale 100%](rep01.png)]
+
+Website: &lt;https://theconversation.com/you-cant-characterize-human-nature-if-studies-overlook-85-percent-of-people-on-earth-106670&gt;
+
+---
+
+# Replication Crisis
+
+.center[![:scale 85%](rep02.png)]
+
+Website: &lt;https://www.theatlantic.com/science/archive/2018/11/psychologys-replication-crisis-real/576223&gt;
+
+---
+
+# Replication Crisis
+
+.center[![:scale 100%](rep03.png)]
+
+Website: &lt;https://theconversation.com/you-cant-characterize-human-nature-if-studies-overlook-85-percent-of-people-on-earth-106670&gt;
+
+---
+
+# What Should We Do?
+
+.font150[
+* .orange[Replications:] see whether the same results hold under different conditions
+
+* .orange[Field experiments:] conduct experiments in realistic settings
+
+* .orange[Larger sample sizes:] large samples tend to be more representative of the underlying population
+
+* .orange[Open methods and open data:] share your code and datasets so other can verify them
+
+* .orange[Pre-registration:] state your hypotheses _before_ running the experiment
+
+]
+---
+
+# We are Getting Better
+
+.center[![:scale 100%](rep04.png)]
+
+Website: &lt;https://www.vox.com/science-and-health/2018/8/27/17761466/psychology-replication-crisis-nature-social-science&gt;
+
+---
+
+# Wrap-up
+
+.font150[
+* Not all experiments are true, many don't replicate
+
+* If possible, pre-register your hypotheses and make your data and code available (RMarkdown can help!)
+
+* Replicate your and other people's work
+
+* Is science wrong? _No_, but there are many wrong findings maskerading as science
+
+* Keep those things in mind while reading a study that seems to good to be true: _it most likely is_]
+
+---
+
+# To do during the weekend
+
+.font150[
+* Watch this video, it is very good: 
+  - &lt;https://youtu.be/dSlCBJSh96w&gt;
+
+* John Oliver on the replication crisis: &lt;https://youtu.be/0Rnq1NpHdmw&gt;
+
+* BBC podcast on the same problem: &lt;https://pca.st/n5b3&gt;
+  
+]
+
+---
+# Survey
+
+.center[![:scale 50%](qr.png)]
+
+---
+
+class: inverse, center, middle
+
+# See you next week!
+
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=720px&gt;&lt;/html&gt;
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="macros.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"ratio": "4:3",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"slideNumberFormat": "<div class=\"progress-bar-container\">   <div class=\"progress-bar\" style=\"width: calc(%current% / %total% * 100%);\">   </div> </div>"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  /* Replace <script> tags in slides area to make them executable
+   *
+   * Runs after post-processing of markdown source into slides and replaces only
+   * <script>s on the last slide of continued slides using the .has-continuation
+   * class added by xaringan. Finally, any <script>s in the slides area that
+   * aren't executed are commented out.
+   */
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container:not(.has-continuation) script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+  var scriptsNotExecuted = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container.has-continuation script'
+  );
+  if (!scriptsNotExecuted.length) return;
+  for (var i = 0; i < scriptsNotExecuted.length; i++) {
+    var comment = document.createComment(scriptsNotExecuted[i].outerHTML)
+    scriptsNotExecuted[i].parentElement.replaceChild(comment, scriptsNotExecuted[i])
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

@@ -565,6 +565,11 @@ Website: <https://www.vox.com/science-and-health/2018/8/27/17761466/psychology-r
 ]
 
 ---
+# Survey
+
+.center[![:scale 50%](qr.png)]
+
+---
 
 class: inverse, center, middle
 
