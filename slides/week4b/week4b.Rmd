@@ -117,7 +117,7 @@ options(repos = r)
 # Social Pressure Example
 
 ```{r social1, highlight.output=c(2), echo=FALSE}
-social <- read.csv("https://raw.githubusercontent.com/pols1600/pols1600.github.io/master/datasets/causality/social.csv")
+social <- read.csv("https://raw.githubusercontent.com/umbertomig/intro-prob-stat-FGV/master/datasets/social.csv")
 ```
 
 ```{r social2, highlight.output=c(2)}
@@ -174,7 +174,7 @@ tapply(social$primary2006, social$messages, mean)[-2] -
 # R Examples
 
 ```{r tidy=FALSE, echo=FALSE}
-leaders <- read.csv("https://raw.githubusercontent.com/pols1600/pols1600.github.io/master/datasets/causality/leaders.csv")
+leaders <- read.csv("https://raw.githubusercontent.com/umbertomig/intro-prob-stat-FGV/master/datasets/leaders.csv")
 ```
 
 ```{r tidy=FALSE}
@@ -309,7 +309,7 @@ summary(leaders$age)
 # Minimum Wage and Unemployment
 
 ```{r dd}
-minwage <- read.csv("https://raw.githubusercontent.com/pols1600/pols1600.github.io/master/datasets/causality/minwage.csv")
+minwage <- read.csv("https://raw.githubusercontent.com/umbertomig/intro-prob-stat-FGV/master/datasets/minwage.csv")
 str(minwage)
 ```
 
