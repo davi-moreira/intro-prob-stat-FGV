@@ -1,0 +1,573 @@
+---
+title: "Week 4 - Descriptive Stats and Observation Studies"
+subtitle: "Causal Inference without Randomization <html><div style='float:left'></div><hr color='#EB811B' size=1px width=800px></html>"
+author: "Umberto Mignozzetti"
+date: "March 12"
+output: 
+  xaringan::moon_reader:
+    css: [default, metropolis, metropolis-fonts]
+    mathjax: "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML"
+    nature: 
+      beforeInit: "macros.js"
+      highlightStyle: github
+      ratio: 4:3
+      highlightLines: true
+      countIncrementalSlides: false
+      slideNumberFormat: |
+        <div class="progress-bar-container">
+          <div class="progress-bar" style="width: calc(%current% / %total% * 100%);">
+          </div>
+        </div>
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+r <- getOption("repos")
+r["CRAN"] <- "http://cran.cnr.berkeley.edu/"
+options(repos = r)
+```
+
+<style>
+
+.remark-slide-number {
+  position: inherit;
+}
+
+.remark-slide-number .progress-bar-container {
+  position: absolute;
+  bottom: 0;
+  height: 6px;
+  display: block;
+  left: 0;
+  right: 0;
+}
+
+.remark-slide-number .progress-bar {
+  height: 100%;
+  background-color: #EB811B;
+}
+
+.orange {
+  color: #EB811B;
+}
+</style>
+
+# Today's Agenda
+
+.font150[
+* Quantiles
+
+* Standard deviation
+
+* Observational studies vs RCTs (QSS 2.5-2.6)
+
+* Differences in Differences
+
+* Leader assassination DiD 
+
+* Internal and external validity
+
+* Replication crisis
+
+]
+---
+
+# Revision
+
+.font150[
+* What is the fundamental problem of causal inference?
+
+* How can we (try to) solve that problem?
+]
+--
+.font150[
+* .orange[Randomization!]
+]
+
+---
+
+# Randomization
+
+.font150[
+* Randomization ensures the treatment .orange[is not correlated] with any other variable
+
+* Randomization .orange[generates balance] between treatment and control groups 
+
+* Treatment and control groups .orange[identical on average]
+
+* Allows us to estimate the average treatment effect simply as a .orange[difference in means]: $\frac{1}{n} \sum_{i=1}^n \{Y_i(1) - Y_i(0)\}$
+]
+
+---
+
+# Social Pressure Example
+
+.font150[
+* August 2006 Primary State-wide Election in Michigan
+
+* Send postcards with different, randomly-assigned messages
+  - no message (control group)
+  - civic duty message
+  - "you are being studied" message (Hawthorne effect)
+  - neighbourhood social pressure message
+]
+
+---
+
+# Social Pressure Example
+
+```{r social1, highlight.output=c(2), echo=FALSE}
+social <- read.csv("https://raw.githubusercontent.com/pols1600/pols1600.github.io/master/datasets/causality/social.csv")
+```
+
+```{r social2, highlight.output=c(2)}
+tapply(social$yearofbirth, social$messages, mean) # Year of Birth
+tapply(social$hhsize, social$messages, mean) # Household size
+tapply(social$primary2006, social$messages, mean) # Outcome
+tapply(social$primary2006, social$messages, mean)[-2] -
+    mean(social$primary2006[social$messages == "Control"]) # SATE for each group
+```
+---
+
+# Quantiles
+
+.font150[
+* Sometimes it is useful to look at the distribution of a given variable
+
+* We can split a variable in many ways:
+	- Quartiles
+	- Quantiles
+	- Percentiles
+
+* Which quantile is the median?
+]
+---
+
+# Quantiles
+
+.font150[
+* What is the median of {2, 5, 6, 10}?
+
+* What is the median of {1, 2, 3, 4, 20}?
+
+* Interquartile range (IQR): the difference between the 75th and the 25th percentile    
+]
+
+---
+
+# Standard Deviation
+
+.font150[
+* Average distance of each data point to the mean
+
+* $SD = (\sqrt{\frac{1}{n} \sum^{N}_{i = 1} (x_{i} - \bar{x})^{2}})$
+]
+--
+
+.font150[
+* where $\bar{x}$ indicates the sample mean, that is, $\bar{x} = \frac{1}{n} \sum^{N}_{i = 1} x_{i}$, and $n$ is the sample size 
+
+* Almost all data entries are located within 2 or 3 standard deviations from the mean
+]
+---
+
+# R Examples
+
+```{r tidy=FALSE, echo=FALSE}
+leaders <- read.csv("https://raw.githubusercontent.com/pols1600/pols1600.github.io/master/datasets/causality/leaders.csv")
+```
+
+```{r tidy=FALSE}
+median(leaders$age)
+IQR(leaders$age)
+quantile(leaders$age)
+quantile(leaders$age, probs = seq(0, 1, by = 0.1)) # deciles
+quantile(leaders$age, probs = c(.34, .55, .93)) # 34th, 55th, 93th percentiles
+```
+---
+
+# R Examples
+
+```{r}
+mean(leaders$age)
+sd(leaders$age)
+summary(leaders$age)
+```
+---
+
+# Observational Studies
+
+.font150[
+* Often, it is unethical or infeasible to randomize the treatment. 
+  - Smoking and cancer 
+  - Gender and salary
+  - Death penalty and crime
+
+* .orange[Observational data]: the treatment is naturally assigned
+]
+
+---
+
+# Observational Studies 
+
+.font150[
+* Why is it harder to make causal inference with observational data? 
+]
+
+--
+.font150[
+* .orange[Confounders/confounding variables:] variables that are associated both with the treatment and the outcome 
+]
+--
+
+.font150[
+* If the treatment is not independent from pre-treatment variables, we cannot be sure about what causes what
+]
+
+---
+
+# Examples of Confounders:
+
+.font150[
+* Are incumbents more likely to win elections?
+  - Maybe, but they also receive more campaign donations
+]
+--
+
+.font150[
+*  Are democratic countries more peaceful than authoritarian ones?
+   - Maybe, but they also tend to be richer
+]
+
+--
+
+.font150[
+* .orange[Selection bias]: groups are not directly comparable
+]
+
+---
+
+# Observation Studies
+
+.font150[
+* .orange[Pre-treatment variables] have to be .orange[controlled for], that is, _held constant_ in the analysis
+
+* .orange[Statistical control]: we use statistical methods to create balance between treatment and control and emulate an experiment as best as we can. E.g:
+  - Instrumental variables (IV)
+  - Regression discontinuity designs (RDD)
+  - Differences-in-differences (DD/DiD/Diff-in-diff)
+]
+
+---
+
+# Differences-in-Differences (DiD)
+
+.font150[
+* Compare trends before and after the treatment across the same units
+
+* Controls for the initial conditions
+
+* Requires data for two time periods (before and after treatment) and at least two units
+
+* .orange[Parallel time trends assumption]
+]
+
+---
+
+# Differences-in-Differences (DiD)
+
+.center[![](ddkosuke.png)]
+
+---
+
+# Minimum Wage and Unemployment
+
+.font120[
+* How does the increase in minimum wage affect unemployment?
+
+* Economists believe the effect is positive: higher wages lead to higher unemployment
+
+* Difficult to randomize minimum wage legislation
+
+* In 1992, NJ minimum wage increased from $4.25 to $5.05...
+
+* ... but neighbouring PA stays at $4.25
+
+* NJ and (eastern) PA are similar, and fast food chains are similar too: wages, prices, products, etc
+
+* [David Card and Alan Krueger (1994)](http://davidcard.berkeley.edu/papers/njmin-aer.pdf) see this change as a natural experiment
+]
+
+---
+
+# Minimum Wage and Unemployment
+
+.center[![](ck.png)]
+
+---
+
+# Minimum Wage and Unemployment
+
+```{r dd}
+minwage <- read.csv("https://raw.githubusercontent.com/pols1600/pols1600.github.io/master/datasets/causality/minwage.csv")
+str(minwage)
+```
+
+---
+
+# Minimum Wage and Unemployment
+
+```{r dd2}
+# Subset the data into NJ and PA
+minwageNJ <- subset(minwage, subset = (location != "PA"))
+minwagePA <- subset(minwage, subset = (location == "PA"))
+```
+
+```{r dd3, highlight.output=1}
+# Compute the proportion of restaurants whose wage is less than $5.05
+mean(minwageNJ$wageBefore < 5.05) # NJ before
+mean(minwageNJ$wageAfter < 5.05) # NJ after
+mean(minwagePA$wageBefore < 5.05) # PA before
+mean(minwagePA$wageAfter < 5.05) # PA after
+```
+
+---
+
+# Minimum Wage and Unemployment
+
+```{r dd4, highlight.output=1}
+# Are the NJ and PA Restaurants Comparable?
+mean(minwageNJ$wageBefore)
+mean(minwagePA$wageBefore)
+
+# Compute the proportion of full-time employees after the increase
+minwageNJ$fullPropBefore <- minwageNJ$fullBefore / (minwageNJ$fullBefore + minwageNJ$partBefore)
+minwagePA$fullPropBefore <- minwagePA$fullBefore / (minwagePA$fullBefore + minwagePA$partBefore)
+mean(minwageNJ$fullPropBefore) # Proportion full-time workers NJ
+mean(minwagePA$fullPropBefore) # Proportion full-time workers PA
+```
+
+---
+
+# Minimum Wage and Unemployment
+
+```{r dd5}
+# Compute the proportion of full-time employees after the increase
+minwageNJ$fullPropAfter <- minwageNJ$fullAfter / (minwageNJ$fullAfter + minwageNJ$partAfter)
+minwagePA$fullPropAfter <- minwagePA$fullAfter / (minwagePA$fullAfter + minwagePA$partAfter)
+mean(minwageNJ$fullPropAfter) # Proportion full-time workers NJ
+mean(minwagePA$fullPropAfter) # Proportion full-time workers PA
+```
+
+---
+
+# Minimum Wage and Unemployment
+
+```{r dd6, highlight.output=1}
+# Compare NJ before and after the change
+NJdiff <- mean(minwageNJ$fullPropAfter) - mean(minwageNJ$fullPropBefore)
+NJdiff
+```
+.font120[
+However, the region as a whole could have changed too. So we use PA as a control case
+]
+
+```{r dd7, highlight.output=1}
+# PA before/after difference to control for possible changes over time
+PAdiff <- mean(minwagePA$fullPropAfter) - mean(minwagePA$fullPropBefore)
+PAdiff
+
+# Difference in difference
+NJdiff - PAdiff
+```
+
+---
+
+# Minimum Wage and Unemployment
+
+.center[![:scale 45%](dd.png)]
+
+.font150[
+* .orange[Parallel trends assumption:] NJ would have followed the same trend as PA had it not received the treatment. However, _we can't test that_.
+]
+
+---
+
+# Animation of DiD
+
+.center[![:scale 60%](did.gif)]
+
+---
+
+class: inverse, center, middle
+
+# Questions?
+
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=720px></html> 
+
+---
+
+# Leader Assassination DD
+
+.font150[
+* **Question 5**
+
+* Does successful leader assassination cause democratization? 
+
+* Does successful leader assassination lead countries to war? 
+
+* Answer these questions by analyzing the data.  Be sure to state your assumptions and provide a brief interpretation of the results.]
+---
+
+# Leader Assassination DD
+
+```{r}
+str(leaders)
+
+# create success variable
+leaders$success <- ifelse(leaders$result == "dies between a day and a week" |
+                            leaders$result == "dies between a week and a month" |
+                            leaders$result == "dies within a day after the attack" |
+                            leaders$result == "dies, timing unknown",1, 0)
+```
+---
+
+# Leader Assassination DD
+
+```{r}
+# polity score before and after assassination attempt
+diff.pol.succ <- mean(leaders$polityafter[leaders$success == 1]) - 
+                   mean(leaders$politybefore[leaders$success == 1]) # successful 
+
+diff.pol.succ
+
+diff.pol.unsucc <- mean(leaders$polityafter[leaders$success == 0]) - 
+                     mean(leaders$politybefore[leaders$success == 0]) # unsuccessful
+
+diff.pol.unsucc
+
+## difference in differences
+diff.pol.succ - diff.pol.unsucc
+```
+---
+
+# Leader Assassination DD
+
+```{r tidy=FALSE}
+# create variable for warbefore and warafter
+leaders$warbefore <- ifelse(leaders$interwarbefore == 1 |
+                              leaders$civilwarbefore == 1, 1, 0)
+leaders$warafter <- ifelse(leaders$interwarafter == 1 |
+                             leaders$civilwarafter == 1, 1, 0)
+
+## compare war before to war after among successful and unsuccessful
+diff.war.succ <- mean(leaders$warafter[leaders$success == 1]) - 
+                   mean(leaders$warbefore[leaders$success == 1])
+
+diff.war.unsucc <- mean(leaders$warafter[leaders$success == 0]) - 
+                     mean(leaders$warbefore[leaders$success == 0])
+
+diff.war.succ - diff.war.unsucc # difference in differences
+```
+
+.font130[
+Using the difference-in-difference approach, we find very little difference in the contries' polity score and in the proportion of countries engaged in war. Leader assassination does not seem to cause countries to democratise or engage in war.]
+---
+
+# Internal and External Validity
+
+.font150[
+* Because of randomization, we know that RCTs have strong _internal validity_
+
+* .orange[Internal validity]: the degree to which we can attribute the results to the treatment and not to other factors
+
+* However, observational studies have greater _external validity_
+
+* .orange[External validity]: the extent to which the results can be generalized 
+]
+
+---
+
+# Replication Crisis
+
+
+.center[![:scale 100%](rep01.png)]
+
+Website: <https://theconversation.com/you-cant-characterize-human-nature-if-studies-overlook-85-percent-of-people-on-earth-106670>
+
+---
+
+# Replication Crisis
+
+.center[![:scale 85%](rep02.png)]
+
+Website: <https://www.theatlantic.com/science/archive/2018/11/psychologys-replication-crisis-real/576223>
+
+---
+
+# Replication Crisis
+
+.center[![:scale 100%](rep03.png)]
+
+Website: <https://theconversation.com/you-cant-characterize-human-nature-if-studies-overlook-85-percent-of-people-on-earth-106670>
+
+---
+
+# What Should We Do?
+
+.font150[
+* .orange[Replications:] see whether the same results hold under different conditions
+
+* .orange[Field experiments:] conduct experiments in realistic settings
+
+* .orange[Larger sample sizes:] large samples tend to be more representative of the underlying population
+
+* .orange[Open methods and open data:] share your code and datasets so other can verify them
+
+* .orange[Pre-registration:] state your hypotheses _before_ running the experiment
+
+]
+---
+
+# We are Getting Better
+
+.center[![:scale 100%](rep04.png)]
+
+Website: <https://www.vox.com/science-and-health/2018/8/27/17761466/psychology-replication-crisis-nature-social-science>
+
+---
+
+# Wrap-up
+
+.font150[
+* Not all experiments are true, many don't replicate
+
+* If possible, pre-register your hypotheses and make your data and code available (RMarkdown can help!)
+
+* Replicate your and other people's work
+
+* Is science wrong? _No_, but there are many wrong findings maskerading as science
+
+* Keep those things in mind while reading a study that seems to good to be true: _it most likely is_]
+
+---
+
+# To do during the weekend
+
+.font150[
+* Watch this video, it is very good: 
+  - <https://youtu.be/dSlCBJSh96w>
+
+* John Oliver on the replication crisis: <https://youtu.be/0Rnq1NpHdmw>
+
+* BBC podcast on the same problem: <https://pca.st/n5b3>
+  
+]
+
+---
+
+class: inverse, center, middle
+
+# See you next week!
+
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=720px></html> 
