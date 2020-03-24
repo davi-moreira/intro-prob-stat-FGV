@@ -1,0 +1,298 @@
+---
+title: "Homework 2 -- Intro to Prob and Stat."
+author: "Umberto Mignozzetti"
+output: pdf_document
+---
+
+## Instructions:
+
+**Due:** 03/24 at 11:59PM.
+
+**What am I expecting?** An R Markdown with the answers. Submit the (.Rmd) file. PDFs will not be accepted.
+
+**Have fun!**
+
+# Basic R Operations
+
+1.1) Make three mathematical operations with the operators we have seen so far. Combine distinct operators. Explain the computation and why you build it in the way you did.
+
+1.2) It is possible to install packages directly from GitHub. To do so, you will have to use the `devtools` package. Install this package in your machine.
+
+1.3) `ggplot2` is the tidyverse's graphics package. Install it using `devtools`. Hint: `install_github("tidyverse/ggplot2")`.
+
+1.4) `separate()` is a function of the `tidyr` package, which is part of the `tidyverse`. Use the help command to learn more about this function.
+
+1.5) Find out how to build pie charts in R.
+
+1.6) Use the `apropos()` function to discover functions that have the term `test` in their names.
+
+1.7) In this test, we ask that you familiarize yourself with the StackOverflow environment. Browse the site a little. Then, __choose a function__ that was learned in this module and search the website for a question about it. Over time, you will find that if you have any questions about R, most likely someone else has had the same problem in the past. __Copy here the link__ of the discussion about your chosen topic. __Summary (in no more than 3 or 4 sentences)__ the person's question, as well as whether the solution(s) proposed by other users were sufficient to answer the original question.
+
+1.8) Suppose a researcher created the package called "my_package". What command would you use to install such a package? What command would you use to load the package?
+
+1.9) Suppose that within this package "my_package" has the function "my_function". As you have just installed this package, you are not yet familiar with the terms of this new feature. How could you find out how to use this command within R? And out of the R?
+
+1.10) What happens when we create a vector using only `c()`? Test it yourself.
+
+1.11) What happens when we create a vector using `c("")`?
+
+1.12) What happens when we combine elements from different classes into a single vector? For example, what happens when we run:
+
+```
+x <- c(1,2,3)
+y <- c('1','2','3')
+c(x,y)
+```
+
+1.13) Load the `mtcars` dataset. Summarize any variable of your choice from this bank.
+
+1.14) Build a table of a `mtcars` variable.
+
+1.15) Read the following articles on misuse of graphics:
+
+- [Consultant Mind: Bad Charts](https://www.consultantsmind.com/2017/04/10/bad-charts/)
+
+- [Statistics How to - Misleading Graphs](https://www.statisticshowto.datasciencecentral.com/misleading-graphs/)
+
+- [PosGraduando - Examples of Graphs](https://posgraduando.com/exemplos-de-graficos/).
+
+What do these articles have in common?
+
+1.16) Identify the type of variable (discrete quantitative, continuous quantitative, nominal qualitative, ordinal qualitative) of each of the variables below:
+
+- The chance that it will rain tomorrow.
+
+- Numbers of cars that travel, in one day, on the busiest avenue in the city.
+
+- Customer satisfaction with the service: excellent, good, regular, bad, or very bad.
+
+- Blood type.
+
+- Email of Company X customers.
+
+- Time of professional experience of employees of Company X, in years.
+
+- Time of professional experience of employees of Company X, in seconds.
+
+- Professional experience of Company X employees: high experience, medium experience, or low experience.
+
+- Gender of the interviewee.
+
+- HDI of the countries.
+
+- The inflation rate for the year.
+
+# Fix the Code
+
+2.1) 
+
+```{r, eval = F}
+"2 + 2"
+
+```
+
+
+2.2) 
+
+
+```{r, eval = F}
+2 + "pi"
+
+```
+
+2.3) 
+
+
+```{r, eval = F}
+
+1 = TRUE
+
+```
+
+2.4) 
+
+```{r, eval = F}
+
+4 \ 3
+
+```
+
+2.5) 
+
+```{r, eval = F}
+
+Help(cor.test)
+
+```
+
+2.6) 
+
+```{r, eval = F}
+
+???cor.test
+
+```
+
+2.7) 
+
+```{r, eval = F}
+
+help(if)
+
+```
+
+2.8) 
+
+```{r, eval = F}
+
+?help("cor.test")
+
+```
+
+2.9) 
+
+
+```{r, eval = F}
+
+this is my sum
+
+# 1 + 2
+
+```
+
+
+2.10)
+
+```{r,eval = F}
+
+numbers <- c(1 2 3 4)
+
+```
+
+
+2.11)
+
+```{r,eval = F}
+
+animals <- c("dog" "cat" "parrot" "bunny")
+
+```
+
+
+2.12)
+
+```{r,eval = F}
+
+animals <- C("dog", "cat", "parrot", "bunny")
+
+```
+
+
+2.13)
+
+```{r,eval = F}
+
+Head(mtcars)
+
+```
+
+
+2.14)
+
+```{r,eval = F}
+
+str(Mtcars)
+
+```
+
+
+2.15)
+
+```{r,eval = F}
+
+dim[mtcars]
+
+```
+
+
+2.16)
+
+```{r,eval = F}
+
+nomes(mtcars)
+
+```
+
+
+2.17)
+
+```{r,eval = F}
+
+head(mtcars, x = 10)
+
+```
+
+
+2.18) 
+
+```{r,eval = F}
+
+animals <- c("dog", "cat", "parrot", "bunny")
+
+numbers <- c(1,2,3,4,5,6,7,8,9,10)
+
+dat <- data.frame(animals,numbers)
+
+```
+
+
+2.19) 
+
+```{r,eval = F}
+
+dat <- c(1:100)
+
+save("my_data.RData", file = dat)
+
+```
+
+2.20) 
+
+
+```{r, eval=F}
+data("diamonds")
+ggplot(data = aes(x = cut)) + 
+  geom_bar()
+```
+
+
+2.21) 
+
+```{r, eval=F}
+data("diamonds")
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, y = cut))
+```
+
+
+
+2.22) 
+
+```{r, eval=F}
+theme_bw() + 
+ggplot(data = diamonds, mapping = aes(x = cut))
+```
+
+
+2.23) 
+
+
+```{r, eval=F}
+ggplot(data = diamonds) + 
+geom_bar(mapping = aes(x = cut, color = "red"))
+```
+
+
+# Challenge
+
+3.1) Build a vector with integers from 1 to 1000000. Then, create a subset with all even numbers. Hint: we don't want you to type each element. Find out how to select elements in a vector. Hint: the remainder of the division can be obtained by using the command `%%`. For instance, type `5 %% 3` in R...
