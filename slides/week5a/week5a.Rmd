@@ -1,0 +1,720 @@
+---
+title: "Week 04a - Measurement, Missing Observations, and Data Visualisation"
+subtitle: "Plots and Survey Sampling <html><div style='float:left'></div><hr color='#EB811B' size=1px width=800px></html>"
+author: "Umberto Mignozzetti"
+date: "03/24/2020"
+output: 
+  xaringan::moon_reader:
+    css: [default, metropolis, metropolis-fonts]
+    mathjax: "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML"
+    nature: 
+      beforeInit: "macros.js"
+      highlightStyle: github
+      ratio: 4:3
+      highlightLines: true
+      countIncrementalSlides: false
+      slideNumberFormat: |
+        <div class="progress-bar-container">
+          <div class="progress-bar" style="width: calc(%current% / %total% * 100%);">
+          </div>
+        </div>
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+r <- getOption("repos")
+r["CRAN"] <- "http://cran.cnr.berkeley.edu/"
+options(repos = r)
+```
+
+<style>
+
+.remark-slide-number {
+  position: inherit;
+}
+
+.remark-slide-number .progress-bar-container {
+  position: absolute;
+  bottom: 0;
+  height: 6px;
+  display: block;
+  left: 0;
+  right: 0;
+}
+
+.remark-slide-number .progress-bar {
+  height: 100%;
+  background-color: #EB811B;
+}
+
+.orange {
+  color: #EB811B;
+}
+</style>
+
+# Today's Agenda
+
+.font150[
+* Tables: `table()` and `prop.table()` 
+
+* Missing data in R: `is.na()` and `na.omit()`
+
+* Visualizing data: `barplot()`, `hist()`, and `boxplot()`
+
+* How to save R plots
+
+* Survey sampling methods 
+]
+
+---
+
+# Tables in R
+
+.font130[
+* We have learned how to use the `table()` command in R
+
+* Example:
+]
+
+.code120[
+```{r tidy=FALSE}
+afghan <- read.csv("https://raw.githubusercontent.com/pols1600/pols1600.github.io/master/datasets/measurement/afghan.csv")
+names(afghan)
+table(ISAF = afghan$violent.exp.ISAF,
+      Taliban = afghan$violent.exp.taliban)
+```
+]
+---
+
+# Tables in R: prop.table()
+
+.font130[
+* We can also use `prop.table()` to see the proportion of cases in each cell
+
+* We have to include `table()` within parentheses too:
+]
+
+.code120[
+```{r tidy=FALSE}
+prop.table(table(ISAF = afghan$violent.exp.ISAF,
+                 Taliban = afghan$violent.exp.taliban))
+```
+]
+---
+# Tables in R
+
+.font130[
+* Since we're already using nested functions, we can also use `round()` to round the values in each cell
+
+* Notice the `, 2` in the code below. It indicates that we will round the numbers up to two significant digits
+]
+
+.code120[
+```{r tidy=FALSE}
+round(prop.table(table(ISAF = afghan$violent.exp.ISAF,
+                       Taliban = afghan$violent.exp.taliban)), 2)
+```
+]
+
+.font150[
+* The table is now much easier to read and it conveys the same information
+]
+---
+
+# Tables in R: prop.table()
+
+.code120[
+```{r tidy=FALSE}
+round(prop.table(table(ISAF = afghan$violent.exp.ISAF,
+                       Taliban = afghan$violent.exp.taliban)), 2)
+```
+]
+
+.font150[
+* What's the percentage of people that have been victimized by the Taliban?
+
+* And by both the Taliban and ISAF?
+]
+---
+
+# Tables in R: prop.table()
+
+.font150[
+* Another example, now with 3 significant digits and multiplied by 100
+]
+
+.code120[
+```{r tidy=FALSE}
+round(prop.table(table(Employed = afghan$employed,
+                       Income = afghan$income)), 3) * 100
+```
+]
+---
+
+# Missing Data
+
+.font150[
+* Not all individuals answer to surveys
+
+* Two types of non-response:
+  - Individual non-response
+  - Item non-response
+  
+* Both tend to bias the results
+
+* So it is very important that we know where (and think about why) we see gaps in our data
+]
+---
+
+# Missing Data
+
+.font150[
+* R has a special code for missing data, `NA`
+
+* Since `NA` is only used for missing observations, we can count their numbers with `is.na()`
+]
+
+---
+
+# Missing Data
+
+.code120[
+```{r}
+head(afghan$income, n = 10)
+sum(is.na(afghan$income)) # number of missings
+round(mean(is.na(afghan$income)), 2) # proportion of missings
+```
+]
+---
+
+# Missing Data
+
+.font150[
+* Some R function don't work if there's missing data
+
+* We add `na.rm = TRUE` to the code
+]
+
+.code120[
+```{r}
+# Victims of Taliban violence
+sum(is.na(afghan$violent.exp.taliban))
+mean(afghan$violent.exp.taliban)
+round(mean(afghan$violent.exp.taliban, na.rm = TRUE), 2)
+```
+]
+
+.font150[
+* Why do you think we have missing data here?
+]
+
+---
+
+# Missing Data
+
+.font150[
+* We can create a new variable or data set without missing observations
+
+* Use the `na.omit()` command
+]
+
+.code150[
+```{r}
+length(afghan$violent.exp.taliban)
+taliban.no.missing <- na.omit(afghan$violent.exp.taliban)
+length(taliban.no.missing)
+length(afghan$violent.exp.taliban) - length(taliban.no.missing)
+```
+]
+
+---
+
+# Missing Data
+
+.font150[
+* You can also visualize the number of missing observations with `summary()`
+]
+
+.code150[
+```{r}
+summary(afghan$violent.exp.taliban)
+sum(is.na(afghan$violent.exp.taliban))
+```
+]
+---
+
+class: inverse, center, middle
+
+# Data Visualisation
+
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=720px></html> 
+---
+
+# Bar Plots
+
+.font120[
+* Bar plots are used to visualize .orange[factor/character variables]
+
+* Proportion of observations in each category as the height of each bar
+
+* Options:
+
+  - `main = "Title"`
+  - `xlab = "X label"`
+  - `ylab = "Y label"`
+  - `xlim = c(number, number)` limits for the x variable  
+  - `ylim = c(number, number)` limits for the y variable  
+  - `names.arg = c("Bars labels")` - in the same order of the variable
+  - `horiz = TRUE` for horizontal plots
+  - `cols = "colour name"` bar color (see: )
+  
+* You can use `barplot()` with `prop.table()` instead of pie charts
+]
+---
+
+# Bar Plots
+
+```{r}
+employed.ptable <- prop.table(table(afghan$employed))
+employed.ptable
+```
+
+```{r tidy=FALSE, eval=FALSE}
+employed.ptable <- prop.table(table(afghan$employed))
+barplot(employed.ptable,
+        names.arg = c("Unemployed", "Employed"), 
+        main = "Proportion of Employed Afghanis",
+        xlab = "Employment",
+        ylab = "Proportion",
+        ylim = c(0, 0.6))
+```
+---
+
+# Bar Plots
+
+```{r tidy=FALSE, echo=FALSE, fig.align='center'}
+barplot(employed.ptable,
+        names.arg = c("Unemployed", "Employed"), # 0 and 1, respectively
+        main = "Proportion of Employed Afghanis",
+        xlab = "Employment",
+        ylab = "Proportion",
+        ylim = c(0, 0.6))
+```
+
+---
+
+# Bar Plots
+
+```{r tidy=FALSE, eval=FALSE}
+barplot(employed.ptable,
+        names.arg = c("Unemployed", "Employed"), # 0 and 1, respectively
+        main = "Proportion of Employed Afghanis",
+        ylab = "Employment", # change the axes
+        xlab = "Proportion", 
+        xlim = c(0, 0.7), # now it's xlim 
+        horiz = TRUE,     # because the plot is horizontal
+        col = "brown")
+```
+---
+
+# Bar Plots
+
+```{r tidy=FALSE, echo=FALSE, fig.align='center'}
+barplot(employed.ptable,
+        names.arg = c("Unemployed", "Employed"), # 0 and 1, respectively
+        main = "Proportion of Employed Afghanis",
+        ylab = "Employment",
+        xlab = "Proportion",
+        xlim = c(0, 0.6),
+        horiz = TRUE,
+        col = "brown")
+```
+
+---
+
+# Histograms
+
+.font120[
+* We use histograms to display the distribution of a .orange[numeric variable]
+
+* They are similar to bar plots
+
+* Numeric variables are _binned_ into groups
+
+* Histograms shows the density of each bin
+
+* Important: Height is share of observations in bin divided by bin size
+
+* We care less about the density of each bin than about the distribution of the variable as a whole
+
+* Area of each bar is the share of observations that fall into that bin
+
+* Area of all bins sum to one
+]
+---
+
+# Histograms
+
+.font120[
+* Many options are similar to those of `barplot()`: `main`, `xlab`, `ylim`, `col`
+
+* We can also add `freq = FALSE` to show the density of each histograms
+
+* `breaks =` changes the size of the bins
+
+* Densities are useful to compare different distributions
+
+* .orange[Densities are not percentages]: "percentage per horizontal unit"
+]
+---
+
+# Histograms
+
+```{r tidy=FALSE, eval=FALSE}
+# For colours, see: http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf
+hist(afghan$age,
+     main = "Histogram - Age",
+     xlab = "Age",
+     xlim = c(0, 0.04),
+     freq = FALSE,
+     col = "darkorange2") 
+```
+---
+
+# Histograms
+
+```{r tidy=FALSE, echo=FALSE, fig.align='center'}
+hist(afghan$age,
+     main = "Histogram - Age",
+     xlab = "Age",
+     ylim = c(0, 0.04),
+     freq = FALSE,
+     col = "darkorange2") 
+```
+---
+
+# Histograms
+
+.font150[
+* We can also add text and fitted lines to all R plots
+
+* Use `text()` and `abline()` after `hist()`
+]
+
+```{r tidy=FALSE, eval=FALSE}
+hist(afghan$age,
+     main = "Histogram - Age",
+     xlab = "Age",
+     ylim = c(0, 0.04),
+     freq = FALSE,
+     col = "darkorange2") 
+## add a text label at (x, y) = (35, 0.35)
+text(x = 35, y = 0.035, "median")
+## add a vertical line representing median
+abline(v = median(afghan$age))
+```
+---
+
+# Histograms
+
+```{r tidy=FALSE, echo=FALSE, fig.align='center'}
+hist(afghan$age,
+     main = "Histogram - Age",
+     xlab = "Age",
+     ylim = c(0, 0.04),
+     freq = FALSE,
+     col = "darkorange2") 
+## add a text label at (x, y) = (35, 0.35)
+text(x = 35, y = 0.035, "median")
+## add a vertical line representing median
+abline(v = median(afghan$age))
+```
+
+---
+
+class: inverse, center, middle
+
+# Questions?
+
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=720px></html> 
+
+---
+
+class: inverse, center, middle
+
+# Box-Plots
+
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=720px></html> 
+
+---
+# Box Plots
+
+.font150[
+* Like histograms, box plots also display the distribution of a numeric variable
+
+* Box plots show _the median_, _quartiles_, and _IQR_
+
+* Useful to compare different distributions side-by-side
+
+* It is also useful to identify outliers, that is, data points that are above 1.5 times the interquartile range (IQR)
+
+* `boxplot()`
+
+]
+
+---
+
+# Box Plots
+
+.font150[
+* `boxplot()` also has a series of optional arguments:
+
+  - `main`, `ylab`, `ylim`, `col`
+  - `formula = y ~ group`, y is numeric variable and group is a factor
+]
+
+---
+# Box Plots
+
+```{r tidy=FALSE}
+afghan <- read.csv("https://raw.githubusercontent.com/pols1600/pols1600.github.io/master/datasets/measurement/afghan.csv")
+names(afghan)
+median(afghan$age)
+quantile(afghan$age, probs = c(0, .25, .5, .75, 1))
+```
+---
+
+# Box Plots
+
+```{r tidy=FALSE, fig.align='center'}
+boxplot(afghan$age, main = "Distribution of age", ylab = "Age", ylim = c(10, 80))
+```
+---
+
+# Box Plots and Histograms
+
+.font150[
+* To visualize the distribution of a single variable, histograms might be more informative. Compare:
+]
+
+```{r tidy=FALSE, eval=FALSE}
+hist(afghan$age,
+     main = "Histogram - Age",
+     xlab = "Age",
+     ylim = c(0, 0.04),
+     freq = FALSE) 
+## add a text label at (x, y) = (35, 0.35)
+text(x = 35, y = 0.035, "median")
+## add a vertical line representing median
+abline(v = median(afghan$age))
+```
+---
+
+# Histogram
+
+```{r tidy=FALSE, echo=FALSE, fig.align='center'}
+hist(afghan$age,
+     main = "Histogram - Age",
+     xlab = "Age",
+     ylim = c(0, 0.04),
+     freq = FALSE) 
+## add a text label at (x, y) = (35, 0.35)
+text(x = 35, y = 0.035, "median")
+## add a vertical line representing median
+abline(v = median(afghan$age))
+```
+---
+
+# Box Plots
+
+```{r tidy=FALSE, fig.align='center'}
+boxplot(afghan$age, main = "Age Distribution", ylab = "Age", ylim = c(10, 80))
+```
+---
+
+# Box Plots
+
+.font150[
+* But box plots provide an easy way to compare multiple observations at a time
+
+* Similar to `tapply()`
+]
+
+```{r}
+tapply(afghan$age, afghan$province, median, na.rm = TRUE)
+```
+---
+
+# Box Plots
+
+```{r tidy=FALSE, fig.align='center'}
+boxplot(afghan$age ~ afghan$province,
+        main = "Age Distribution by Province", ylab = "Age", col = "grey")
+```
+
+---
+
+# Save R Plots
+
+.center[![:scale 80%](save01.png)]
+
+---
+# Save R Plots
+
+.center[![:scale 65%](save02.png)]
+
+---
+
+# Save R Plots
+
+.center[![:scale 80%](save03.png)]
+
+---
+
+class: inverse, center, middle
+
+# Questions?
+
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=720px></html> 
+---
+
+# Survey Sampling
+
+.font130[Last primaries:]
+
+.pull-left[
+#### Democratic candidates
+
+* Hillary Clinton 44%
+* Bernie Sanders 26% 
+* Joe Biden 20%
+]
+
+.pull-right[
+#### Republican candidates
+
+* Donald Trump 26%
+* Ben Carson 15%
+* Carly Fiorina 10%
+* Jeb Bush 9%
+* Marco Rubio 9%
+* Ted Cruz 6%
+]
+
+.font110[Source: Huffington Post, Pollster]
+
+.font130[
+* Most polls only interview several hundred voters
+]
+--
+.font130[
+* Goal: infer what 200 million voters are thinking
+]
+---
+
+# The 1936 Literary Digest Poll
+
+.font150[
+* Mail questionnaire to 10 million people
+
+* Final sample size: over 2.3 million returned
+
+* Addresses came from phone books and club memberships
+
+* The young Gallup used 50,000 respondents
+]
+
+
+.center[
+|                 | FDR's vote share | 
+|:----------------|-----------------:|
+| Literary Digest |               43 | 
+| George Gallup   |               56 | 
+| Actual Outcome  |               62 |
+]
+---
+
+# The 1936 Literary Digest Poll
+
+.font150[
+* Why did the Literary Digest get the numbers so wrong?
+]
+--
+.font150[
+* .orange[Biased sample]
+]
+
+---
+
+# Quota Sampling vs Random Sampling
+
+.font150[
+* **Quota sampling:** Sample certain groups until quota is filled
+
+* Problem: Unobservables can bias the results
+]
+--
+.font150[
+* **Random sampling:** Random draws without replacement from the population
+
+* Everybody has the same chance of being in the sample
+
+* Problem: _none_, sample is unbiased! 
+]
+---
+
+# Random Sampling
+
+.font150[
+* Not every single sample will match all characteristics of the population exactly
+
+* But as the number of samples gets larger (say 1000 samples of 1000 respondents), on average the samples would be representative
+
+* Polls are associated with _uncertainty_: plus or minus a number
+
+* But getting a random sample is _hard_
+]
+
+---
+
+# Difficulties
+
+.font130[
+* Problems of telephone survey
+  - Random digit dialing from phone book
+  - Wealthy individuals have higher changes of being called
+  - Caller ID screening (unit non-response)
+
+* Problems of internet survey
+  - Non-probability sampling
+  - Cheap but non-representative
+  - Young, urban, rich groups are overrepresented
+  - Requires statistical corrections (usually weights)
+]
+
+---
+
+class: inverse, center, middle
+
+# Questions?
+
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=720px></html> 
+---
+
+# Homework
+
+.font150[
+* Changing minds about gay marriage?
+
+* You are going to perform a replication of an experiment.
+
+* It is going to be amazing!
+]
+
+---
+
+class: inverse, center, middle
+
+# See you next Thursday!
+
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=720px></html> 
