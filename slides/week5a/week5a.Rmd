@@ -1,5 +1,5 @@
 ---
-title: "Week 05a - Measurement, Missing Observations, and Data Visualisation"
+title: "Week 05a - Measurement, Missing Observations, and Data Visualization"
 subtitle: "Plots and Survey Sampling <html><div style='float:left'></div><hr color='#EB811B' size=1px width=800px></html>"
 author: "Umberto Mignozzetti"
 date: "03/24/2020"
@@ -60,8 +60,6 @@ options(repos = r)
 * Missing data in R: `is.na()` and `na.omit()`
 
 * Visualizing data: `barplot()`, `hist()`, and `boxplot()`
-
-* How to save R plots
 
 * Survey sampling methods 
 ]
