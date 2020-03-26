@@ -104,7 +104,7 @@ options(repos = r)
 # Bar Plots
 
 ```{r, fig.align='center'}
-afghan <- read.csv("https://raw.githubusercontent.com/pols1600/pols1600.github.io/master/datasets/measurement/afghan.csv")
+afghan <- read.csv("https://raw.githubusercontent.com/umbertomig/intro-prob-stat-FGV/master/datasets/afghan.csv")
 barplot(prop.table(table(afghan$violent.exp.taliban)), main = "Taliban Victimization Rate")
 ```
 
