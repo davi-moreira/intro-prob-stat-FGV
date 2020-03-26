@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Week 05b - Measurement</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Umberto Mignozzetti" />
+    <meta name="date" content="2020-03-26" />
+    <link href="week5b_files/remark-css/default.css" rel="stylesheet" />
+    <link href="week5b_files/remark-css/metropolis.css" rel="stylesheet" />
+    <link href="week5b_files/remark-css/metropolis-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Week 05b - Measurement
+## Survey Sampling and List Experiments
+<html>
+<div style="float:left">
+
+</div>
+<hr color='#EB811B' size=1px width=800px>
+</html>
+### Umberto Mignozzetti
+### 03/26/2020
+
+---
+
+
+
+
+&lt;style&gt;
+
+.remark-slide-number {
+  position: inherit;
+}
+
+.remark-slide-number .progress-bar-container {
+  position: absolute;
+  bottom: 0;
+  height: 6px;
+  display: block;
+  left: 0;
+  right: 0;
+}
+
+.remark-slide-number .progress-bar {
+  height: 100%;
+  background-color: #EB811B;
+}
+
+.orange {
+  color: #EB811B;
+}
+&lt;/style&gt;
+
+# Today's Agenda
+
+.font150[
+
+* Brief recap
+
+* Survey sampling methods 
+
+* Social desirability bias
+
+* List experiments 
+
+* Final project
+
+]
+
+---
+
+# Descriptive Statistics
+
+.font150[
+* Quantiles, quartiles, median, IQR, SD
+
+* Standard deviation: average distance from points to the mean
+	
+	- `\(SD = \sqrt{\frac{1}{n} \sum^{n}_{i = 1} (x_{i} - \bar{x})^{2}}\)`  
+
+* Outliers: 1.5x IQR
+
+* Median is robust to outliers
+
+* When `\(n\)` is large, mean and median are roughly the same
+]
+
+---
+
+# Bar Plots
+
+.font150[
+* Bar plots, histograms, box plots 
+
+* Bar plots:
+
+	- Describe factor variables
+	- `barplot(prop.table(table(dataset$variable)))`
+]
+
+---
+
+# Bar Plots
+
+
+```r
+afghan &lt;- read.csv("https://raw.githubusercontent.com/pols1600/pols1600.github.io/master/datasets/measurement/afghan.csv")
+barplot(prop.table(table(afghan$violent.exp.taliban)), main = "Taliban Victimization Rate")
+```
+
+&lt;img src="week5b_files/figure-html/unnamed-chunk-1-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Histograms
+
+.font150[
+* Histograms
+
+	- Describe numeric variables
+	- Show the shape of the variable distribution
+	- Densities are .orange[not] percentiles
+	- Densities are the proportion of _each bin_
+	- `hist(dataset$variable, freq = FALSE)`
+]
+
+---
+
+# Histograms
+
+
+```r
+hist(afghan$age, main = "Age Distribution", freq = FALSE)
+```
+
+&lt;img src="week5b_files/figure-html/unnamed-chunk-2-1.png" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+# Box Plots
+
+.font150[
+* Box plots
+
+	- Distribution of a numeric variable
+	- Quartiles, median, IQR, outliers
+	- `boxplot(variable ~ group)` (where `~ group` is optional)
+]
+---
+
+# Box Plots
+
+
+```r
+boxplot(afghan$age ~ afghan$province, main = "Age Distribution by province")
+```
+
+&lt;img src="week5b_files/figure-html/unnamed-chunk-3-1.png" style="display: block; margin: auto;" /&gt;
+---
+
+class: inverse, center, middle
+
+# Questions?
+
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=720px&gt;&lt;/html&gt; 
+
+---
+
+class: inverse, center, middle
+
+# Survey Sampling
+
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=720px&gt;&lt;/html&gt; 
+
+---
+
+# Survey Sampling
+
+.font130[Last primaries:]
+
+.pull-left[
+#### Democratic candidates
+
+* Hillary Clinton 44%
+* Bernie Sanders 26% 
+* Joe Biden 20%
+]
+
+.pull-right[
+#### Republican candidates
+
+* Donald Trump 26%
+* Ben Carson 15%
+* Carly Fiorina 10%
+* Jeb Bush 9%
+* Marco Rubio 9%
+* Ted Cruz 6%
+]
+
+.font110[Source: Huffington Post, Pollster]
+
+.font130[
+* Most polls only interview several hundred voters
+]
+--
+.font130[
+* Goal: infer what 200 million voters are thinking
+]
+---
+
+# The 1936 Literary Digest Poll
+
+.font150[
+* Mail questionnaire to 10 million people
+
+* Final sample size: over 2.3 million returned
+
+* Addresses came from phone books and club memberships
+
+* The young Gallup used 50,000 respondents
+]
+
+
+.center[
+|                 | FDR's vote share | 
+|:----------------|-----------------:|
+| Literary Digest |               43 | 
+| George Gallup   |               56 | 
+| Actual Outcome  |               62 |
+]
+---
+
+# The 1936 Literary Digest Poll
+
+.font150[
+* Why did the Literary Digest get the numbers so wrong?
+]
+--
+.font150[
+* .orange[Biased sample]
+]
+
+---
+
+# Quota Sampling vs Random Sampling
+
+.font150[
+* **Quota sampling:** Sample certain groups until quota is filled
+
+* Problem: Unobservables can bias the results
+]
+--
+.font150[
+* **Random sampling:** Random draws without replacement from the population
+
+* Everybody has the same chance of being in the sample
+
+* Problem: _none_, sample is unbiased! 
+]
+---
+
+# Random Sampling
+
+.font150[
+* Not every single sample will match all characteristics of the population exactly
+
+* But as the number of samples gets larger (say 1000 samples of 1000 respondents), on average the samples would be representative
+
+* Polls are associated with _uncertainty_: plus or minus a number
+
+* But getting a random sample is _hard_
+]
+
+---
+
+# Difficulties
+
+.font130[
+* Problems of telephone survey
+  - Random digit dialing from phone book
+  - Wealthy individuals have higher changes of being called
+  - Caller ID screening (unit non-response)
+
+* Problems of internet survey
+  - Non-probability sampling
+  - Cheap but non-representative
+  - Young, urban, rich groups are overrepresented
+  - Requires statistical corrections (usually weights)
+]
+
+---
+
+class: inverse, center, middle
+
+# Questions?
+
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=720px&gt;&lt;/html&gt; 
+---
+
+# Social Desirability Bias
+
+.font150[
+* Respondents sometimes do not state their true preferences
+
+* Examples: support for drug use, abortion, etc
+
+* Under- or overestimation of true proportion
+]
+
+---
+
+# List Experiments
+
+.font150[
+* .orange[List experiments] can minimize the problem
+
+* Grant anonymity to respondents
+
+* Control group sees a list of statements
+
+* Treatment group sees the same list _plus a sensitive item_
+
+* _Assuming that respondents don't lie and that both groups would answer the same number of non-sensitive items_, we can infer their true preferences
+]
+---
+
+# Racial Attitudes
+
+.font150[
+* Example based on Graeme Blair and Kosuke Imai, 2012, [Statistical Analysis of List Experiments](https://www.jstor.org/stable/41403738), _Political Analysis_ 20(1), 47-77. 
+]
+---
+
+# Racial Attitudes
+
+.font150[
+* Control group: 
+
+Now  I’m  going  to  read  you  three  things  that  sometimes  make  people  angry or upset. After I read all three, just tell me HOW MANY of them upset you. (I don’t want to know which ones, just how many.)
+
+1) "the federal government increasing the tax on gasoline;"
+
+2) "professional athletes getting million-dollar-plus salaries;"
+
+3) "large corporations polluting the environment."
+
+How many, if any, of these things upset you?
+]
+---
+
+# List experiments
+
+.font130[
+* Treatment group: 
+
+Now  I’m  going  to  read  you  four  things  that  sometimes  make  people  angryor upset. After I read all four, just tell me HOW MANY of them upset you. (I don’t want to know which ones, just how many.)
+
+1) "the federal government increasing the tax on gasoline;"
+
+2) "professional athletes getting million-dollar-plus salaries;"
+
+3) "large corporations polluting the environment."
+
+.orange[4) "a black family moving next door to you."]
+
+How many, if any, of these things upset you?
+]
+
+---
+
+# Shy Trump Supporter
+
+.center[![:scale 100%](coppock01.png)]
+
+Coppock, Alexander. 2017. [Did Shy Trump Supporters Bias the 2016 Polls? Evidence from a Nationally-representative List Experiment]( https://alexandercoppock.com/papers/Coppock_shytrump.pdf). Statistics, Politics, and Policy. 8(1):29-40
+---
+
+# Shy Trump Supporter
+
+.center[![:scale 100%](coppock02.png)]
+
+---
+
+# Shy Trump Supporter
+
+.center[![:scale 100%](coppock03.png)]
+
+---
+
+# Shy Trump Supporter
+
+.center[![:scale 100%](coppock04.png)]
+
+---
+
+class: inverse, center, middle
+
+# Questions?
+
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=720px&gt;&lt;/html&gt; 
+
+---
+
+class: inverse, center, middle
+
+# See you next week!
+
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=720px&gt;&lt;/html&gt;
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="macros.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"ratio": "4:3",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"slideNumberFormat": "<div class=\"progress-bar-container\">   <div class=\"progress-bar\" style=\"width: calc(%current% / %total% * 100%);\">   </div> </div>"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  /* Replace <script> tags in slides area to make them executable
+   *
+   * Runs after post-processing of markdown source into slides and replaces only
+   * <script>s on the last slide of continued slides using the .has-continuation
+   * class added by xaringan. Finally, any <script>s in the slides area that
+   * aren't executed are commented out.
+   */
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container:not(.has-continuation) script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+  var scriptsNotExecuted = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container.has-continuation script'
+  );
+  if (!scriptsNotExecuted.length) return;
+  for (var i = 0; i < scriptsNotExecuted.length; i++) {
+    var comment = document.createComment(scriptsNotExecuted[i].outerHTML)
+    scriptsNotExecuted[i].parentElement.replaceChild(comment, scriptsNotExecuted[i])
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
