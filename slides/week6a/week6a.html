@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Week 05 - Measurement</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Umberto Mignozzetti" />
+    <meta name="date" content="2020-03-26" />
+    <link href="week6a_files/remark-css/default.css" rel="stylesheet" />
+    <link href="week6a_files/remark-css/metropolis.css" rel="stylesheet" />
+    <link href="week6a_files/remark-css/metropolis-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Week 05 - Measurement
+## Bivariate Relationships: Scatter Plots and Correlations
+<html>
+<div style="float:left">
+
+</div>
+<hr color='#EB811B' size=1px width=800px>
+</html>
+### Umberto Mignozzetti
+### 03/26/2020
+
+---
+
+
+
+
+&lt;style&gt;
+
+.remark-slide-number {
+  position: inherit;
+}
+
+.remark-slide-number .progress-bar-container {
+  position: absolute;
+  bottom: 0;
+  height: 6px;
+  display: block;
+  left: 0;
+  right: 0;
+}
+
+.remark-slide-number .progress-bar {
+  height: 100%;
+  background-color: #EB811B;
+}
+
+.orange {
+  color: #EB811B;
+}
+&lt;/style&gt;
+
+# Today's Agenda
+
+.font150[
+* Scatter plots
+
+* Correlations
+
+* Logarithmic Transformations
+]
+
+---
+
+class: inverse, center, middle
+
+# Scatter plots
+
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=720px&gt;&lt;/html&gt; 
+
+---
+
+# Scatter Plots
+
+.font150[
+* Scatter plots show how two variables are related to each other
+
+* Convention: _x_ is the independent variable (what you change), _y_ is the dependent variable (what you want to explain)
+
+* Cartesian coordinates (x, y) of the data points
+
+* `plot(x,y)` in R
+]
+---
+
+# Scatter Plots
+
+.font150[
+* `plot()` also has many options:
+
+	- `main`, `xlab`, `ylab`, `ylim`, `xlim`, `col` as we have seen before
+	- `pch =` different plotting symbols. 
+	
+* You can add another variable to the same graph with `points()`
+]
+---
+
+# Scatter Plots
+
+.center[![:scale 60%](pch.png)]
+---
+
+# Scatter Plots
+
+
+```r
+set.seed(12345)                       # reproducibility
+x &lt;- rnorm(n = 100, mean = 5, sd = 2) # random numbers with normal distribution
+y &lt;- x + rnorm(100, 0, 1)             # no need to write function arguments
+df &lt;- data.frame(x,y)                 # just to see them side-by-side
+head(df, 10)                          # first 10 observations
+```
+
+```
+##           x         y
+## 1  6.171058 6.3949830
+## 2  6.418932 5.2627087
+## 3  4.781393 5.2038119
+## 4  4.093006 2.7682504
+## 5  6.211775 6.3528592
+## 6  1.364088 0.8280401
+## 7  6.260197 5.9485910
+## 8  4.447632 6.0037414
+## 9  4.431681 3.9836472
+## 10 3.161356 3.4824795
+```
+---
+
+# Scatter Plots
+
+
+```r
+plot(df$x, df$y, main = "Scatter Plot", pch = 16, col = "blue")     # plot
+```
+
+&lt;img src="week6a_files/figure-html/unnamed-chunk-2-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Scatter Plots
+
+
+```r
+z &lt;- runif(n = 10, min = 0, max = 10) # add another variable 
+df &lt;- data.frame(x,y,z)
+head(df, 10)
+```
+
+```
+##           x         y         z
+## 1  6.171058 6.3949830 0.7548045
+## 2  6.418932 5.2627087 4.7438424
+## 3  4.781393 5.2038119 2.6458955
+## 4  4.093006 2.7682504 2.3074607
+## 5  6.211775 6.3528592 5.9619939
+## 6  1.364088 0.8280401 1.5892558
+## 7  6.260197 5.9485910 8.5505484
+## 8  4.447632 6.0037414 2.3745380
+## 9  4.431681 3.9836472 7.9711170
+## 10 3.161356 3.4824795 0.7848559
+```
+---
+
+# Scatter Plots
+
+
+```r
+plot(df$x, df$y, main = "Scatter Plot", pch = 16, col = "blue")
+{{points(df$z, pch = 17, col = "red")}}      # add z to the plot
+```
+
+&lt;img src="week6a_files/figure-html/unnamed-chunk-4-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+class: inverse, center, middle
+
+# Time-Series Plots
+
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=720px&gt;&lt;/html&gt; 
+
+---
+
+# Time-Series Plots
+
+.font150[
+* `plot()` also plots time trends
+
+* Add `type = "l"` (line) to your code
+
+* Additional lines with `lines()`
+
+* Be sure to include _the same x variable in both_
+]
+---
+
+# Time-Series Plots
+
+
+```r
+set.seed(1) 
+years &lt;- seq(from = 1950, to = 2010, by = 10)
+k &lt;- rnorm(n = 7, mean = 5, sd = 5)
+plot(years, k, main = "Time-Series Plot", type = "l", col = "brown")
+```
+
+&lt;img src="week6a_files/figure-html/unnamed-chunk-5-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Time-Series Plots
+
+
+```r
+set.seed(3)                               # different random numbers
+z &lt;- rnorm(n = 7, mean = 5, sd = 2.5)
+plot(years, k, main = "Time-Series Plot", type = "l", col = "brown")
+{{lines(years, z, type = "l", col = "blue")}} # add z to plot
+text(2009, 8, "K variable", col = "brown")
+text(2009, 4, "Z variable", col = "blue")
+```
+
+&lt;img src="week6a_files/figure-html/unnamed-chunk-6-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+# The Health and Wealth of Nations
+
+
+```r
+library(ggplot2)
+library(gganimate)
+library(gapminder)
+head(gapminder)
+```
+
+```
+## # A tibble: 6 x 6
+##   country     continent  year lifeExp      pop gdpPercap
+##   &lt;fct&gt;       &lt;fct&gt;     &lt;int&gt;   &lt;dbl&gt;    &lt;int&gt;     &lt;dbl&gt;
+## 1 Afghanistan Asia       1952    28.8  8425333      779.
+## 2 Afghanistan Asia       1957    30.3  9240934      821.
+## 3 Afghanistan Asia       1962    32.0 10267083      853.
+## 4 Afghanistan Asia       1967    34.0 11537966      836.
+## 5 Afghanistan Asia       1972    36.1 13079460      740.
+## 6 Afghanistan Asia       1977    38.4 14880372      786.
+```
+
+---
+
+class: inverse, center, middle
+
+# Time-Series Examples
+
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=720px&gt;&lt;/html&gt; 
+
+---
+
+# The Health and Wealth of Nations
+
+
+```r
+# Plot
+ggplot(gapminder, aes(gdpPercap, lifeExp, size = pop, colour = continent)) +
+  geom_point(alpha = 0.7, show.legend = TRUE) +
+  scale_colour_manual(values = continent_colors) +
+  scale_size(range = c(2, 12)) +
+  scale_x_log10() +
+  # Here comes the gganimate specific bits
+  labs(title = 'Year: {frame_time}', x = 'GDP per capita', y = 'life expectancy') +
+  transition_time(year) +
+  ease_aes('linear', interval = 0.0005)
+```
+---
+
+# The Health and Wealth of Nations
+
+&lt;img src="week6a_files/figure-html/unnamed-chunk-9-1.gif" style="display: block; margin: auto;" /&gt;
+---
+
+# The Health and Wealth of Nations
+
+
+```r
+# Plot by Continent
+ggplot(gapminder, aes(gdpPercap, lifeExp, size = pop, colour = country)) +
+  geom_point(alpha = 0.7, show.legend = FALSE) +
+  scale_colour_manual(values = country_colors) +
+  scale_size(range = c(2, 12)) +
+  scale_x_log10() +
+*facet_wrap(~continent) +
+  labs(title = 'Year: {frame_time}', x = 'GDP per Capita', y = 'Life Expectancy') +
+  transition_time(year) +
+  ease_aes('linear', interval = 0.0005)
+```
+---
+
+# The Health and Wealth of Nations
+
+&lt;img src="week6a_files/figure-html/unnamed-chunk-11-1.gif" style="display: block; margin: auto;" /&gt;
+---
+
+# Perceived Income Distribution in Austria
+
+.center[![:scale 150%](austria.gif)]
+---
+
+class: inverse, center, middle
+
+# Correlation
+
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=720px&gt;&lt;/html&gt; 
+---
+
+# Correlation
+
+.font150[
+* Most widely-used statistics to summarize bivariate relationships
+
+* Many types of correlation coefficients, most common is _Pearson's r_
+
+* It ranges from -1 (strongest negative correlation) to +1 (strongest positive correlation)
+
+* 0 denotes no correlation
+
+* Correlations only indicate .orange[linear relationships]
+
+* Remember: .orange[correlation is not causation]
+]
+---
+
+# z-score
+
+.font150[
+* z-score is the number of standard deviations an observation is above or below the mean
+
+* z-score of an observation _i_ of variable _x_ is defined as _the value of i minus the mean of x over the standard deviation of x_. Formally:
+
+* `\(z_{x_i} = \frac{x_i - \bar{x}}{S_x}\)`
+
+* For instance, if a data point has a z-score of 2, it is 2 standard deviations from the mean
+
+* As z-scores .orange[standardise] the variables, .orange[the original units of measurement do not matter]
+]
+---
+
+# Correlation
+
+.font150[
+* Correlation coefficient is .orange[the average product of the z-score of _x_ and the z-score of _y_]
+
+* Formally:
+
+* `\(r_{x,y} = \frac{1}{n-1} \sum^{n}_{i=1} \big(\frac{x_i - \bar{x}}{S_x} \times \frac{y_i - \bar{y}}{S_y}\big)\)`
+
+* In R: `cor(x,y)`
+]
+---
+
+# Correlation
+
+.font150[
+* How do we know if a correlation is strong or not?
+
+* _Theory_
+
+* In social sciences, usually we consider
+  - lower than 0.3 = weak
+  - between 0.3 and 0.5 = moderate
+  - higher than 0.5 = strong
+  - (but don't quote me on that!)
+]
+---
+
+# Correlation
+
+
+```r
+data(gapminder)
+names(gapminder)
+```
+
+```
+## [1] "country"   "continent" "year"      "lifeExp"   "pop"       "gdpPercap"
+```
+
+```r
+cor(gapminder$gdpPercap, gapminder$lifeExp)
+```
+
+```
+## [1] 0.5837062
+```
+
+```r
+cor(gapminder$pop, gapminder$lifeExp)
+```
+
+```
+## [1] 0.06495537
+```
+
+```r
+cor(gapminder$pop, gapminder$gdpPercap)
+```
+
+```
+## [1] -0.02559958
+```
+---
+
+# Always Plot Your Data
+
+.center[![:scale 100%](dino.gif)]
+
+Source: [Autodesk Research](https://www.autodeskresearch.com/publications/samestats)
+
+---
+
+class: inverse, center, middle
+
+# Questions?
+
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=720px&gt;&lt;/html&gt; 
+
+---
+
+class: inverse, center, middle
+
+# Logarithmic Transformations
+
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=720px&gt;&lt;/html&gt; 
+
+---
+
+# Log Transformations
+
+.font150[
+* When data are skewed, we often .orange[log transform] the variable
+
+* Logarithm of a positive number _x_ is the exponent of a base _b_
+
+* `\(y = log_{b}x \Longleftrightarrow x = b^y\)`
+
+* `\(4 = log_{3}81 \Longleftrightarrow 81 = 3ˆ{4}\)` 
+
+
+```r
+log(81, base = 3)
+```
+
+```
+## [1] 4
+```
+]
+---
+
+# Système International d'Unités (SI)
+
+.center[
+| Prefix |   Decimal  | Base 10 | 
+|:------:|:----------:| :------:|
+| giga   | 1000000000 | 10^9    | 
+| mega   | 1000000    | 10^6    |
+| kilo   | 1000       | 10^3    |
+| -      | 1          | 10^0    | 
+| centi  | 0.01       | 10^-2   |
+| mili   | 0.001      | 10^-3   |
+]
+
+.font120[
+* .orange[Logarithmic scales represent an equal amount of multiplicative change]
+
+* One log increase represents a 10x increase in the original unit
+
+* From one kilobyte (kB) to one megabyte (MB) = 1000x = just 3 in base 10
+
+* _Pulls small values apart and bring large values together_
+]
+---
+
+# Euler's Number
+
+.font150[
+* Natural logarithm: `\(e\)` (Euler's number) as base value
+
+* `\(e = 2.7182 \dots\)`
+
+* `\(y = log_{e}x \Longleftrightarrow x = e^y\)`
+
+
+```r
+log(81) # e is the base argument default
+```
+
+```
+## [1] 4.394449
+```
+]
+---
+
+# Log Transformation
+
+
+```r
+hist(gapminder$gdpPercap, main = "GDP per capita", freq = FALSE)
+```
+
+&lt;img src="week6a_files/figure-html/unnamed-chunk-15-1.png" style="display: block; margin: auto;" /&gt;
+---
+
+# Log Transformation
+
+
+```r
+hist(log(gapminder$gdpPercap), main = "Log GDP per capita", freq = FALSE)
+```
+
+&lt;img src="week6a_files/figure-html/unnamed-chunk-16-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+# The Health and Wealth of Nations
+
+
+```r
+plot(gapminder$gdpPercap, gapminder$lifeExp,
+     main = "GDP per capita and life expectancy",
+     ylab = "life expectancy",
+     xlab = "GDP per capita",
+     pch = 16, col = "grey")
+```
+
+&lt;img src="week6a_files/figure-html/unnamed-chunk-17-1.png" style="display: block; margin: auto;" /&gt;
+---
+
+# The Health and Wealth of Nations
+
+
+```r
+cor(log(gapminder$gdpPercap), gapminder$lifeExp)
+```
+
+```
+## [1] 0.8076179
+```
+
+```r
+plot(log(gapminder$gdpPercap), gapminder$lifeExp,
+     main = "Log GDP per capita and life expectancy",
+     ylab = "life expectancy",xlab = "Log GDP per capita",
+     pch = 16, col = "grey")
+```
+
+&lt;img src="week6a_files/figure-html/unnamed-chunk-18-1.png" style="display: block; margin: auto;" /&gt;
+---
+
+# Log Transformations
+
+.font150[
+* Often used with population or GDP per capita
+
+* Reduce positive skew
+
+* Make distributions more symmetrical
+
+* Useful because correlations are only valid for linear relationships
+
+* .orange[Always plot your data before the analysis]
+]
+
+---
+
+# Hans Rosling - The Joy of Stats
+
+.center[
+&lt;iframe width="560" height="315" src="https://www.youtube.com/embed/jbkSRLYSojo" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen&gt;&lt;/iframe&gt;
+]
+
+.font150[
+Hans Rosling's 200 Countries, 200 Years, 4 Minutes - The Joy of Stats - BBC Four. &lt;https://youtu.be/jbkSRLYSojo&gt;
+]
+
+---
+
+class: inverse, center, middle
+
+# See You on Thursday!
+
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=720px&gt;&lt;/html&gt;
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="macros.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"ratio": "4:3",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"slideNumberFormat": "<div class=\"progress-bar-container\">   <div class=\"progress-bar\" style=\"width: calc(%current% / %total% * 100%);\">   </div> </div>"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  /* Replace <script> tags in slides area to make them executable
+   *
+   * Runs after post-processing of markdown source into slides and replaces only
+   * <script>s on the last slide of continued slides using the .has-continuation
+   * class added by xaringan. Finally, any <script>s in the slides area that
+   * aren't executed are commented out.
+   */
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container:not(.has-continuation) script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+  var scriptsNotExecuted = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container.has-continuation script'
+  );
+  if (!scriptsNotExecuted.length) return;
+  for (var i = 0; i < scriptsNotExecuted.length; i++) {
+    var comment = document.createComment(scriptsNotExecuted[i].outerHTML)
+    scriptsNotExecuted[i].parentElement.replaceChild(comment, scriptsNotExecuted[i])
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
