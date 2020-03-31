@@ -1,5 +1,5 @@
 ---
-title: "Week 05 - Measurement"
+title: "Week 06a - Measurement"
 subtitle: "Bivariate Relationships: Scatter Plots and Correlations <html><div style='float:left'></div><hr color='#EB811B' size=1px width=800px></html>"
 author: "Umberto Mignozzetti"
 date: "03/26/2020"
