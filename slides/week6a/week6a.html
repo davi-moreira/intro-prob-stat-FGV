@@ -108,9 +108,16 @@ class: inverse, center, middle
 
 
 ```r
+# Reproducibility
 set.seed(12345)                       # reproducibility
+
+# Umberto's kitchen
 x &lt;- rnorm(n = 100, mean = 5, sd = 2) # random numbers with normal distribution
+
+# Keep steering
 y &lt;- x + rnorm(100, 0, 1)             # no need to write function arguments
+
+# Now we have it :)
 df &lt;- data.frame(x,y)                 # just to see them side-by-side
 head(df, 10)                          # first 10 observations
 ```
@@ -232,8 +239,6 @@ text(2009, 4, "Z variable", col = "blue")
 
 
 ```r
-library(ggplot2)
-library(gganimate)
 library(gapminder)
 head(gapminder)
 ```

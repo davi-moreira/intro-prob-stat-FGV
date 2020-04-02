@@ -106,9 +106,16 @@ class: inverse, center, middle
 # Scatter Plots
 
 ```{r, fig.align='center',fig.width=10, fig.height=5}
+# Reproducibility
 set.seed(12345)                       # reproducibility
+
+# Umberto's kitchen
 x <- rnorm(n = 100, mean = 5, sd = 2) # random numbers with normal distribution
+
+# Keep steering
 y <- x + rnorm(100, 0, 1)             # no need to write function arguments
+
+# Now we have it :)
 df <- data.frame(x,y)                 # just to see them side-by-side
 head(df, 10)                          # first 10 observations
 ```
