@@ -80,3 +80,4 @@ Answer the following questions:
 
 1. What is the fundamental problem of the causal inference? Provide an example.
 2. One researcher wants to study tax conservatism among the rich. She selects lottery ticket winners to run her study, and she claims that the biggest the ticket the person won, the more the person is against income taxes. Should we believe this study? What are the strengths of this study? What are the weaknesses of this study?
+3. Suppose you want to replicate the study in **question 3** in Brazil. What would you do? What are the design choices that you would make? What are the potential problems?
