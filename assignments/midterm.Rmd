@@ -72,12 +72,11 @@ Answer the following questions:
 3. What is the white callback rate?
 4. What is the Black-Female callback rate?
 5. What is the White-Female callback rate?
-6. What is the callback rate by first name? Which first name receives the highest and the lowest callback rates?
+6. What is the callback rate by the first name? Which first name receives the highest and the lowest callback rates?
 7. Make a mosaicplot of the callback rate by race.
 8. Make a mosaicplot of the callback rate by gender.
 
 ## Question 4
 
 1. What is the fundamental problem of the causal inference? Provide an example.
-2. One researcher want to study tax conservatism among rich. She selects lotery ticket winners to run her study, and she claims that the biggest the ticket the person won, the more the person is against income taxes. Should we believe this study? What are the strenghts in this study? What are the weaknesses in this study?
-3. Suppose you want to replicate the study in **question 3** in Brazil. What would you do? What are the design choices that you would make? What are the potential problems?
+2. One researcher wants to study tax conservatism among the rich. She selects lottery ticket winners to run her study, and she claims that the biggest the ticket the person won, the more the person is against income taxes. Should we believe this study? What are the strengths of this study? What are the weaknesses of this study?
