@@ -1,0 +1,201 @@
+---
+title: "Homework 3 -- Intro to Probability and Statistics"
+author: "Umberto Mignozzetti"
+output: pdf_document
+---
+
+# Instructions:
+
+**Due:** 04/01 at 11:59PM.
+
+**What am I expecting?** An R Markdown with the answers.
+
+**Have fun!**
+
+# Changing Minds on Gay Marriage
+
+In this assignment, you will analyze the data from two experiments in which households were canvassed for support on gay marriage.
+
+This exercise is based on: LaCour, M. J., and D. P. Green. 2014. “[When Contact Changes Minds: An Experiment on Transmission of Support for Gay Equality.](http://dx.doi.org/10.1126/science.1256151)” *Science* 346(6215): 1366–69.
+
+**Context:** Canvassers were given a script leading to conversations that averaged about twenty minutes. A distinctive feature of this study is that gay and straight canvassers were randomly assigned to households and canvassers revealed whether they were straight or gay in the course of the conversation. The experiment aims to test the 'contact hypothesis,' which contends that out-group hostility (towards gays in this case) diminishes when people from different groups interact with one another.
+
+-------------------- ----------------------------------------------------------
+ Name                 Description
+ -------------------- ----------------------------------------------------------
+ `study`              Study (1 or 2) 
+ 
+ `treatment`          Treatment assignment: `No contact`, 
+                      `Same-Sex Marriage Script by Gay Canvasser`,
+                      `Same-Sex Marriage Script by Straight Canvasser`,
+                      `Recycling Script by Gay Canvasser`, and
+                      `Recycling Script by Straight Canvasser`
+ 
+ `wave`               Survey wave (1-7). Note that Study 2 lacks wave 5 and 6.
+ 
+ `ssm`                Support for gay marriage (1 to 5).  
+                      Higher scores indicate more support.
+ -------------------------------------------------------------------------------
+
+Each observation of this data set is a respondent giving a response to a five-point survey item on same-sex marriage.  There are two different studies in this data set, involving interviews during 7 different time periods (i.e. 7 waves). In both studies, the first wave consists of the interview before the canvassing treatment occurs. 
+
+Use the [gay.csv](https://raw.githubusercontent.com/umbertomig/intro-prob-stat-FGV/master/datasets/gay.csv) data set.
+
+## Question 1
+
+Explore the dataset. Make histograms of the quantitative variables and barplots of the qualitative variables. Discuss them.
+
+```{r}
+## Load tidyverse
+library(tidyverse)
+
+## Loading the dataset
+gay <- read.csv("https://raw.githubusercontent.com/umbertomig/intro-prob-stat-FGV/master/datasets/gay.csv")
+
+## Subsetting only study 1
+gay <- filter(gay, study==1)
+
+## Erasing the variable `study`
+gay$study <- NULL
+
+## Dataset head
+head(gay, 10)
+```
+
+### Analyzing the treatment variable
+
+I did a barplot of the treatment variable. The barplot is more appropriate in this case, as the treatment is discrete:
+
+```{r}
+ggplot(data = gay) +
+  geom_bar(mapping = aes(y = treatment))
+```
+
+We can see that we had much more people assigned to no contact than to any other treatment status.
+
+### Analyzing the waves
+
+I did a barplot of the waves The barplot is more appropriate in this case, as the waves are discrete:
+
+```{r}
+ggplot(data = gay) +
+  geom_bar(mapping = aes(y = wave))
+```
+
+The first wave had most respondents, since it was before the treatment takes place. For the following waves, it gets harder to find the same people in their houses. Thus, the numbers decrease over time.
+
+### Analyzing the ssm
+
+The ssm is a scale ranging from 1 to 5. Higher numbers represent more support for gay marriage. I did a histogram of the ssm variable below:
+
+```{r}
+ggplot(data = gay) +
+  geom_histogram(mapping = aes(x = ssm), bins = 5)
+```
+
+The results in terms of same sex marriage support show a lot of polarization in the public surveyed by this research.
+
+
+## Question 2
+
+Using the baseline interview wave before the treatment is administered (wave == 1), examine whether randomization was properly conducted. Base your analysis on the three groups:
+
+- 'Same-Sex Marriage Script by Gay Canvasser'
+- 'Same-Sex Marriage Script by Straight Canvasser'
+- 'No Contact.'
+  
+Briefly comment on the results. Would you say that the study was well designed?
+
+```{r}
+## Select wave 1
+wave1 <- filter(gay, wave == 1)
+
+## Examine the randomization
+tapply(wave1$ssm, wave1$treatment, mean)
+```
+
+The results show that the average SSM in the control group (3.04) is close to the averages in the same sex treatment by a gay (3.03) and a straight (3.10) canvesser. Thus, it seems that the randomization was well carried out.
+
+## Question 3
+
+The second wave of survey was implemented two months after the canvassing. Estimate the average treatment effects (differences in means) of gay and straight canvassers on support for same-sex marriage, separately (wave == 2). Give a brief interpretation of the results.
+
+```{r}
+## Select wave 1
+wave2 <- filter(gay, wave == 2)
+
+## Means
+tapply(wave2$ssm, wave2$treatment, mean)
+
+## Differences in means
+tapply(wave2$ssm, wave2$treatment, mean) - tapply(wave2$ssm, wave2$treatment, mean)[1]
+```
+
+Compared with no contact, the canvassing had an effect of (0.1) when the canvasser is gay, and (0.12) when the canvasser was straight.
+
+## Question 4
+
+Check if the results persist in wave 7 of the study. Give a brief interpretation of the results.
+
+```{r}
+## Select wave 7
+wave7 <- filter(gay, wave == 7)
+
+## Means
+tapply(wave7$ssm, wave7$treatment, mean)
+
+## Differences in means
+tapply(wave7$ssm, wave7$treatment, mean) - tapply(wave7$ssm, wave7$treatment, mean)[1]
+```
+
+The results show that gay canvassers had a long term effect on attitudes.
+
+# Coronavirus
+
+Rami Krispin build a dataset with coronavirus cases updated daily. The package name is `coronavirus`.
+
+## Question 1
+
+Download the dataset and load it. Find the documentations for this package.
+
+```{r}
+install.packages('coronavirus', repos =  "http://cran.us.r-project.org")
+library(coronavirus)
+```
+
+The code above install and load the package. The references are in the [following webpage](https://cran.r-project.org/web/packages/coronavirus/coronavirus.pdf).
+
+## Question 2
+
+Can you find any stackoverflow resources about this package? If not, explain why? If yes, what types of resources?
+
+Yes! There is one question asking how to update the package automatically. The question is in here: https://stackoverflow.com/questions/60536428/how-can-i-refresh-a-data-source-from-an-r-package-automatically-specifically-th
+
+## Question 3
+
+Make a table of number of cases by country. The table has to update itself automatically, so when I grade the problem set, the table will be the most updated one. Give a brief discussion on what did you do to solve this problem.
+
+```{r}
+coronavirus %>%
+  filter(type == "confirmed") %>% 
+  group_by(Country.Region) %>% 
+  summarise(total = sum(cases)) %>% 
+  arrange(-total) %>%
+  print(n = Inf)
+```
+
+As we can see, this table is very outdated!! Using the question on stackoverflow we get:
+
+```{r}
+download.file("https://github.com/RamiKrispin/coronavirus/raw/master/data/coronavirus.rda", "cv")
+load("cv")
+```
+
+```{r}
+coronavirus %>%
+  filter(type == "confirmed") %>% 
+  group_by(Country.Region) %>% 
+  summarise(total = sum(cases)) %>% 
+  arrange(-total) %>%
+  print(n = Inf)
+```

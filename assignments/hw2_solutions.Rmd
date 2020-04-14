@@ -1,0 +1,633 @@
+---
+title: "Homework 2"
+author: "Umberto Mignozzetti"
+date: "4/7/2020"
+output: pdf_document
+---
+
+# Basic R Operations
+
+&nbsp;
+
+## 1.1) Math operations
+
+My first math operation is a summation and a division:
+
+```{r}
+(2+2)/4
+```
+
+In the first operation, I am summing up two plus two, taking the result, and dividing by four. My second operation is a summation of a log:
+
+```{r}
+log(3)+1
+```
+
+In the second operation I am taking the natural log of three and summing one to it. My last operation is a product of a difference:
+
+```{r}
+3*(pi-1)
+```
+
+In the last operation, I am taking the number pi, subtracting one, and multiplying the result by three.
+
+&nbsp;
+
+## 1.2) Install devtools
+
+The following code install packages in R:
+
+```{r}
+install.packages('devtools', repos = "http://cran.us.r-project.org")
+```
+
+During my installation, I had a problem with an error that was showing up on my knitr. The problem was because I was trying to download a package without setting a mirror. I've searched on the internet and found the [following solution on Stackoverflow](https://stackoverflow.com/questions/33969024/install-packages-fails-in-knitr-document-trying-to-use-cran-without-setting-a). When I added the repos in my install.packages command, all worked fine.
+
+&nbsp;
+
+## 1.3) Installing ggplot2
+
+Looking into the [ggplot2 GitHub page](https://github.com/tidyverse/ggplot2), I've found the following code to install the GitHub version of ggplot2 using devtools:
+
+```{r}
+devtools::install_github("tidyverse/ggplot2")
+```
+
+And the installations worked well.
+
+&nbsp;
+
+## 1.4) separate function
+
+The first thing I did was to load the package and ask for help in R.
+
+```{r}
+library(tidyverse)
+help(separate)
+```
+
+Then, I googled the functions separate and I've found a webpage explaining how it works. The webpage is in [here](https://tidyr.tidyverse.org/reference/separate.html).
+
+The help in R tells me that the function do the following:
+
+> "Given either regular expression or a vector of character positions, separate() turns a single character column into multiple columns."
+
+&nbsp;
+
+## 1.5) piecharts R
+
+I've googled it and found the [following webpage](https://www.statmethods.net/graphs/pie.html). It has explanations on how to build several types of piecharts. Below I am adding one of the examples in the webpage:
+
+```{r fig.align="center"}
+slices <- c(10, 12,4, 16, 8)
+lbls <- c("US", "UK", "Australia", "Germany", "France")
+pie(slices, labels = lbls, main="Pie Chart of Countries")
+```
+
+&nbsp;
+
+## 1.6) apropos function
+
+First, I had no idea what the apropos function was supposed to do. I googled it and find that it searches for functions with names containing a given character expression. Below my answer about which functions have the character test on them:
+
+```{r}
+apropos('test')
+```
+
+&nbsp;
+
+## 1.7) stackoverflow
+
+I looked into the stackoverflow website and it has many questions and answers related to R and other computer languages. The questions are rated by users, what facilitates to identify which answers are useful.
+
+I took a deeper look into [this question here](https://stackoverflow.com/questions/61076605/how-to-connect-the-point-with-a-line-on-plot-in-r) because it was about plots, and we learned plots during class. The user asked the following:
+
+> "I was trying to plot this dataframe on R and then connect the dots together with a line for having a development graph showing how the number of film per year has changed."
+
+The person wants to build a graph with how the number of films changed per year. The solution was the following:
+
+```{r}
+set.seed(111)
+fpa = data.frame(Anno=sample(2000:2018),FilmPerAnno=rnbinom(19,mu=10,size=1))
+par(mfrow=c(1,2))
+plot(fpa, type = "b", xlab="Year", ylab="Film Per Year",main="not ordered")
+plot(fpa[order(fpa$Anno),], type = "b", xlab="Year", ylab="Film Per Year",
+main="ordered")
+```
+
+&nbsp;
+
+## 1.8) my_package
+
+To install the my_package package, we need to use the install.packages function:
+
+```{r eval = FALSE}
+install.packages('my_package', repos = "http://cran.us.r-project.org")
+```
+
+Once installed, to load the package we need to use the following function:
+
+```{r eval = FALSE}
+library(my_package)
+```
+
+&nbsp;
+
+## 1.9) my_function
+
+On my_package, I can find about my_function in R by asking for help. I'd use the following syntax:
+
+```{r eval = FALSE}
+help(my_function)
+```
+
+Outside R, I can take a look on stackoverflow, or even on the creator's website.
+
+&nbsp;
+
+## 1.10) only c() vector
+
+When I put on my console the following code:
+
+```{r eval = FALSE}
+myVector <- c()
+```
+
+It created a NULL empty vector.
+
+&nbsp;
+
+## 1.11) only c("") vector
+
+When I put on my console the following code:
+
+```{r eval = FALSE}
+myVector <- c("")
+```
+
+It created a vector with "" inside it.
+
+&nbsp;
+
+## 1.12) combining different objects
+
+The running code for the example is the following:
+
+```{r}
+# create vector x
+x <- c(1,2,3)
+
+# find the class of x
+class(x)
+
+# create vector y
+y <- c('1','2','3')
+
+# find the class of y
+class(y)
+
+# combining both
+z <- c(x,y)
+
+# find the class of z
+class(z)
+```
+
+It coerces both objects to become character vectors.
+
+&nbsp;
+
+## 1.13) Load mtcars
+
+Looked on the internet and I've found the [following instructions](https://rstudio-pubs-static.s3.amazonaws.com/481654_883a4b47c9b244d4859dd1db235f0165.html) on how to load a built-in R dataset:
+
+```{r}
+data(mtcars)
+```
+
+To summarize one variable in the dataset, I looked into its head:
+
+```{r}
+head(mtcars)
+```
+
+And selected the variable mpg:
+
+```{r}
+summary(mtcars$mpg)
+```
+
+&nbsp;
+
+## 1.14) build table
+
+I build a table of the variable cyl in mtcars:
+
+```{r}
+table(mtcars$cyl)
+```
+
+&nbsp;
+
+## 1.15) readings
+
+You should do this one by yourself.
+
+&nbsp;
+
+## 1.16) types of variables:
+
+- The chance that it will rain tomorrow: **quant continuous**
+- Number of cars that travel, in one day, on the busiest avenue in the city: **quant discrete**
+- Customer satisfaction with the service: excellent, good, regular, bad, or very bad: **quali ordinal**
+- Blood type: **quali nominal**
+- Email of Company X customers: **quali nominal**
+- Time of professional experience of employees of Company X, in years: **quanti discrete**
+- Time of professional experience of employees of Company X, in seconds: **quanti discrete**
+- Professional experience of Company X employees: high experience, medium experience, or low experience: **quali ordinal**
+- Gender: **quali nominal**
+- HDI of the countries: **quant continuous**
+- The inflation rate for the year: **quant continuous**
+
+&nbsp;
+
+# Fix the code
+
+## 2.1)
+
+The original code was this one here:
+
+```{r eval = FALSE}
+"2 + 2"
+```
+
+And my answer is the following:
+
+```{r}
+2 + 2
+```
+
+## 2.2)
+
+The original code was this one here:
+
+```{r eval = FALSE}
+2 + "pi"
+```
+
+And my answer is the following:
+
+```{r}
+2 + pi
+```
+
+## 2.3)
+
+The original code was this one here:
+
+```{r eval = FALSE}
+1 = TRUE
+```
+
+And my answer is the following:
+
+```{r}
+1 == TRUE
+```
+
+## 2.4)
+
+The original code was this one here:
+
+```{r eval = FALSE}
+4 \ 3
+```
+
+And my answer is the following:
+
+```{r}
+4 / 3
+```
+
+## 2.5)
+
+The original code was this one here:
+
+```{r eval = FALSE}
+Help(cor.test)
+```
+
+And my answer is the following:
+
+```{r}
+help(cor.test)
+```
+
+## 2.6)
+
+The original code was this one here:
+
+```{r eval = FALSE}
+???cor.test
+```
+
+And my answer is the following:
+
+```{r}
+??cor.test
+```
+
+## 2.7)
+
+The original code was this one here:
+
+```{r eval = FALSE}
+help(if)
+```
+
+And my answer is the following:
+
+```{r}
+help('if')
+```
+
+## 2.8)
+
+The original code was this one here:
+
+```{r eval = FALSE}
+?help("cor.test")
+```
+
+And my answer is the following:
+
+```{r}
+help("cor.test")
+```
+
+## 2.9)
+
+The original code was this one here:
+
+```{r eval = FALSE}
+this is my sum
+# 1 + 2
+```
+
+And my answer is the following:
+
+```{r}
+# this is my sum
+1 + 2
+```
+
+## 2.10)
+
+The original code was this one here:
+
+```{r eval = FALSE}
+numbers <- c(1 2 3 4)
+```
+
+And my answer is the following:
+
+```{r}
+numbers <- c(1,2,3,4)
+```
+
+## 2.11)
+
+The original code was this one here:
+
+```{r eval = FALSE}
+animals <- c("dog" "cat" "parrot" "bunny")
+```
+
+And my answer is the following:
+
+```{r}
+animals <- c("dog","cat","parrot","bunny")
+```
+
+## 2.12)
+
+The original code was this one here:
+
+```{r eval = FALSE}
+animals <- C("dog", "cat", "parrot", "bunny")
+```
+
+And my answer is the following:
+
+```{r}
+animals <- c("dog", "cat", "parrot", "bunny")
+```
+
+## 2.13)
+
+The original code was this one here:
+
+```{r eval = FALSE}
+Head(mtcars)
+```
+
+And my answer is the following:
+
+```{r}
+head('mtcars')
+```
+
+## 2.14)
+
+The original code was this one here:
+
+```{r eval = FALSE}
+str(Mtcars)
+```
+
+And my answer is the following:
+
+```{r}
+str(mtcars)
+```
+
+## 2.15)
+
+The original code was this one here:
+
+```{r eval = FALSE}
+dim[mtcars]
+```
+
+And my answer is the following:
+
+```{r}
+dim(mtcars)
+```
+
+## 2.16)
+
+The original code was this one here:
+
+```{r eval = FALSE}
+nomes(mtcars)
+```
+
+And my answer is the following:
+
+```{r}
+names(mtcars)
+```
+
+## 2.17)
+
+The original code was this one here:
+
+```{r eval = FALSE}
+head(mtcars, x = 10)
+```
+
+And my answer is the following:
+
+```{r}
+head(mtcars, n = 10)
+```
+
+## 2.18)
+
+The original code was this one here:
+
+```{r eval = FALSE}
+animals <- c("dog", "cat", "parrot", "bunny")
+numbers <- c(1,2,3,4,5,6,7,8,9,10)
+dat <- data.frame(animals,numbers)
+```
+
+And my answer is the following:
+
+```{r}
+animals <- c("dog", "cat", "parrot", "bunny", NA, NA, NA, NA, NA, NA)
+numbers <- c(1,2,3,4,5,6,7,8,9,10)
+dat <- data.frame(animals,numbers)
+dat
+```
+
+## 2.19)
+
+The original code was this one here:
+
+```{r eval = FALSE}
+dat <- c(1:100)
+save("my_data.RData", file = dat)
+```
+
+And my answer is the following:
+
+```{r}
+dat <- c(1:100)
+save(dat, file = "my_data.RData")
+```
+
+## 2.20)
+
+The original code was this one here:
+
+```{r eval = FALSE}
+data("diamonds")
+ggplot(data = aes(x = cut)) +
+  geom_bar()
+```
+
+And my answer is the following:
+
+```{r}
+data("diamonds")
+ggplot(data = diamonds) +
+  geom_bar(mapping = aes(x = cut))
+```
+
+## 2.21)
+
+The original code was this one here:
+
+```{r eval = FALSE}
+data("diamonds")
+ggplot(data = diamonds) +
+  geom_bar(mapping = aes(x = cut, y = cut))
+```
+
+And my answer is the following:
+
+```{r}
+data("diamonds")
+ggplot(data = diamonds) +
+  geom_bar(mapping = aes(x = cut))
+```
+
+## 2.22)
+
+The original code was this one here:
+
+```{r eval = FALSE}
+theme_bw() +
+ggplot(data = diamonds, mapping = aes(x = cut))
+```
+
+And my answer is the following:
+
+```{r}
+ggplot(data = diamonds, mapping = aes(x = cut)) +
+  theme_bw()
+```
+
+## 2.23)
+
+The original code was this one here:
+
+```{r eval = FALSE}
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, color = "red"))
+```
+
+And my answer is the following:
+
+```{r}
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut), color = "red")
+```
+
+# Challenge
+
+My vector is the following:
+
+```{r}
+x <- 1:1000000
+```
+
+I have no idea on how to do this! But the hint says:
+
+> "Hint: we don’t want you to type each element. Find out how to select elements in a vector. Hint: the remainder of the division can be obtained by using the command %%. For instance, type 5 %% 3 in R"
+
+Test: if I had a vector y with four elements:
+
+```{r}
+y <- c(1,2,3,4)
+```
+
+The even numbers are 2 and 4. To select them:
+
+```{r}
+y[c(2,4)]
+```
+
+And using remainders:
+
+```{r}
+y[y %% 2 == 0]
+```
+
+And for the entire vector:
+
+```{r}
+head(x[x%%2 == 0], 20)
+```
