@@ -6,7 +6,7 @@ output: pdf_document
 
 # Instructions:
 
-**Due:** 05/11 at 11:59PM.
+**Due:** 05/14 at 11:59PM.
 
 **What am I expecting?** An R Markdown with the answers.
 
@@ -37,8 +37,7 @@ The table below presents the names and descriptions of the variables in the data
                       issue
  -------------------------------------------------------------------------------
 
-In the analysis that follows, we measure state preferences in two ways. First, we can use the proportion of votes by each country that coincide with votes on the same issue cast by the two major Cold War powers: the United States and the Soviet Union. For example, if a country voted for 10 resolutions in 1992, and if its vote matched the United States's vote on exactly 6 of these resolutions, the variable `PctAgreeUS` in
-1992 would equal 60 for this country. Second, we can also measure state preferences in terms of numerical ideal points as explained in class. These ideal points capture what international relations scholars have called countries' liberalism on issues such as political freedom, democratization, and financial liberalization. The two measures are highly correlated, with larger (more liberal) ideal points corresponding to a higher proportion of votes that agree with the United States.
+In the analysis that follows, we measure state preferences in two ways. First, we can use the proportion of votes by each country that coincide with votes on the same issue cast by the two major Cold War powers: the United States and the Soviet Union. For example, if a country voted for 10 resolutions in 1992, and if its vote matched the United States's vote on exactly 6 of these resolutions, the variable `PctAgreeUS` in 1992 would equal 60 for this country. Second, we can also measure state preferences in terms of numerical ideal points as explained in class. These ideal points capture what international relations scholars have called countries' liberalism on issues such as political freedom, democratization, and financial liberalization. The two measures are highly correlated, with larger (more liberal) ideal points corresponding to a higher proportion of votes that agree with the United States.
 
 ## Question 1
 
@@ -46,8 +45,7 @@ We begin by examining how the distribution of state ideal points has changed sin
 
 ## Question 2
 
-Next, examine how the number of countries voting with the United States has changed over time. Plot the average percentage agreement with the United States across all countries over time. Also, add the average percentage agreement with Russia as another line for comparison. Using the `tapply()` function may help with this analysis. Does the United States appear to be getting more or less isolated over time, as compared to Russia? Identify some countries that are consistently pro-US. What are the most pro-Russian countries? Give a brief
-substantive interpretation of the results.
+Next, examine how the number of countries voting with the United States has changed over time. Plot the average percentage agreement with the United States across all countries over time. Also, add the average percentage agreement with Russia as another line for comparison. Using the `tapply()` function may help with this analysis. Does the United States appear to be getting more or less isolated over time, as compared to Russia? Identify some countries that are consistently pro-US. What are the most pro-Russian countries? Give a brief substantive interpretation of the results.
 
 ## Question 3
 
@@ -65,3 +63,62 @@ We have just seen that while some post-Soviet countries have retained nonliberal
 
 Following the end of communism, countries that were formerly part of the Soviet Union have become much more ideologically diverse. Is this also true of the world as a whole? In other words, do countries still divide into two ideological factions? Let’s assess this question by applying the k-means clustering algorithm to ideal points and the proportion of votes agreeing with the United States. Initiate the
 algorithm with just two centroids and visualize the results separately for 1989 and 2012. Briefly comment on the results.
+
+# Success of Leader Assassination as a Natural Experiment
+
+One longstanding debate in the study of international relations concerns the question of whether individual political leaders can make a difference. Some emphasize that leaders with different ideologies and personalities can significantly affect the course of a nation. Others argue that political leaders are severely constrained by historical and institutional forces. Did individuals like Hitler, Mao, Roosevelt, and Churchill make a big difference? The difficulty of empirically testing these arguments stems from the fact that the change of leadership is not random and there are many confounding factors to be adjusted for. In this exercise, we consider a natural experiment in which the success or failure of assassination attempts is assumed to be essentially random. Each observation of the CSV data set `leaders.csv` contains information about an assassination attempt. Table below presents the names and descriptions of variables in this leader assassination data set. 
+
+The polity variable represents the so-called polity score from the Polity Project. The Polity Project systematically documents and quantifies the regime types of all countries in the world from 1800. The polity score is a 21-point scale ranging from -10 (hereditary monarchy) to 10 (consolidated democracy). The result variable is a
+10-category factor variable describing the result of each assassination attempt.
+
+-------------------- ----------------------------------------------------------
+ Name                 Description
+ -------------------- ----------------------------------------------------------
+ `country`            Country
+                      
+ `year`               Year
+                      
+ `leadername`         Name of the leader who was targeted
+                      
+ `age`                Age of the targeted leader
+                      
+ `politybefore`       Average polity score of the country during the 
+                      three-year period prior to the attempt
+                      
+ `polityafter`        Average polity score of the country during the 
+                      three-year period after the attempt
+                      
+ `civilwarbefore`     1 if the country was in civil war during the
+                      three-year period prior to the attempt, 0
+                      otherwise
+                      
+ `civilwarafter`      1 if the country was in civil war during the
+                      three-year period after the attempt, 0 
+                      otherwise
+                      
+ `interwarbefore`     1 if the country was in international war during
+                      the three-year period prior to the attempt, 0
+                      otherwise
+                      
+ `interwarafter`      1 if the country was in international war during 
+                      the three-year period after the attempt, 0
+                      otherwise
+                      
+ `result`             Result of the assassination attempt
+ -------------------------------------------------------------------------------
+
+## Question 7
+
+How many assassination attempts are recorded in the data? How many countries experience at least one leader assassination attempt? (The `unique()` function, which returns a set of unique values from the input vector, may be useful here.) What is the average number of such attempts (per year) among these countries?
+
+## Question 8
+
+Create a new binary variable named `success` that is equal to 1 if a leader dies from the attack and 0 if the leader survives. Store this new variable as part of the original data frame. What is the overall success rate of leader assassination? Does the result speak to the validity of the assumption that the success of assassination attempts is randomly determined?
+
+## Question 9
+
+Investigate whether the average polity score over three years prior to an assassination attempt differs on average between successful and failed attempts. Also, examine whether there is any difference in the age of targeted leaders between successful and failed attempts. Briefly interpret the results in light of the validity of the aforementioned assumption.
+
+## Question 10
+
+Repeat the same analysis as in the previous question, but this time using the country’s experience of civil and international war. Create a new binary variable in the data frame called `warbefore`. Code the variable such that it is equal to 1 if a country is in either civil or international war during the three years prior to an assassination attempt. Provide a brief interpretation of the result.

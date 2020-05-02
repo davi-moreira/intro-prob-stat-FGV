@@ -6,7 +6,7 @@ output: pdf_document
 
 # Instructions:
 
-**Due:** 05/06 at 11:59PM.
+**Due:** 05/07 at 11:59PM.
 
 **What am I expecting?** An R Markdown with the answers.
 
