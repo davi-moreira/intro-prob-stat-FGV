@@ -1,0 +1,516 @@
+---
+title: "Week 08 - Prediction"
+subtitle: "Introduction to Linear Regression Models<html><div style='float:left'></div><hr color='#EB811B' size=1px width=800px></html>"
+author: "Umberto Mignozzetti"
+date: "May 5, 2020"
+output: 
+  xaringan::moon_reader:
+    css: [default, metropolis, metropolis-fonts]
+    mathjax: "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML"
+    nature: 
+      beforeInit: "macros.js"
+      highlightStyle: github
+      ratio: 4:3
+      highlightLines: true
+      countIncrementalSlides: false
+      slideNumberFormat: |
+        <div class="progress-bar-container">
+          <div class="progress-bar" style="width: calc(%current% / %total% * 100%);">
+          </div>
+        </div>
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+r <- getOption("repos")
+r["CRAN"] <- "http://cran.cnr.berkeley.edu/"
+options(repos = r)
+set.seed(12345)
+```
+
+<style>
+
+.remark-slide-number {
+  position: inherit;
+}
+
+.remark-slide-number .progress-bar-container {
+  position: absolute;
+  bottom: 0;
+  height: 6px;
+  display: block;
+  left: 0;
+  right: 0;
+}
+
+.remark-slide-number .progress-bar {
+  height: 100%;
+  background-color: #EB811B;
+}
+
+.orange {
+  color: #EB811B;
+}
+</style>
+
+# Today's Agenda
+
+.font150[
+* Review of correlation
+
+* From correlation to linear regression
+
+* Regression equations
+
+* How to assess model fit with $R^2$
+
+* Analyze randomized experiments with `lm()`
+]
+---
+
+class: inverse, center, middle
+
+# Correlations and Scatter Plots
+
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=720px></html>  
+---
+
+# Correlations and Scatter Plots
+
+```{r gap01,fig.align="center",tidy=F,warning=F,message=F,cache=T,fig.height=4.5,fig.width=9}
+bivariate <- read.csv("https://raw.githubusercontent.com/umbertomig/intro-prob-stat-FGV/master/datasets/bivariate_data.csv")
+bivariate <- subset(bivariate, Year == 2010)
+plot(log(bivariate$GDP), bivariate$Child.Mortality, pch = 19, 
+     main = "Log GDP Per Capita and Child Mortality")
+cor(bivariate$Child.Mortality, log(bivariate$GDP), use = "complete")
+``` 
+---
+
+# Correlations
+
+.font150[
+* .orange[Correlations:] the average product of the z-score of _x_ and the z-score of _y_
+
+* $cor_{x,y} = \frac{1}{n-1} \sum^{n}_{i=1} \big(\frac{x_i - \bar{x}}{S_x} \times \frac{y_i - \bar{y}}{S_y}\big)$
+
+* Positive correlation: upward slope
+
+* Negative correlation: downward slope
+
+* High correlation: tighter, close to a line
+
+* Correlation .orange[cannot] capture nonlinear relationship
+]
+---
+
+# Correlations and Scatter Plots
+
+.center[![:scale 70%](correlations.png)]
+---
+
+class: inverse, center, middle
+
+# Your Turn: run a correlation for the USArrests data in R.
+
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=720px></html>  
+---
+
+class: inverse, center, middle
+
+# Linear Regression
+
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=720px></html>  
+---
+
+# From Correlation to Linear Regression
+
+.font150[
+* Linear regression allows us to create predictions
+
+* Linear regression specifies direction of relationship
+
+* Linear regression allows us to examine more than two variables at the same time (statistical control)
+]
+---
+
+# Linear Regression
+
+.font150[
+* Regression has .orange[one dependent (y)] and _for now_ .orange[one independent (x) variable]
+
+* Goal of regression is to approximate the (linear) relationship between X and Y as best as possible
+
+* Regression is the mathematical model to draw best fitting line through cloud of points
+
+* In R: `lm(Y ~ X, data = yourdataset)`
+]
+---
+
+# Linear Regression
+
+.font100[
+```{r gap02,fig.align="center",tidy=F,warning=F,message=F,cache=T,fig.height=4.5,fig.width=9}
+plot(log(bivariate$GDP), bivariate$Child.Mortality, pch = 19, 
+     main = "Log GDP Per Capita and Child Mortality",
+     xlab = "Log GDP Per Capita", ylab = "Child Mortality")
+{{abline(lm(Child.Mortality ~ log(GDP), data = bivariate), col = "red", lwd = 2)}}
+``` 
+]
+
+.font120[For each x we have a prediction of y: .orange[what would we expect y to be given the value of x?]
+]
+---
+
+# What is the equation of a line?
+
+.font150[
+* $y = mx + b$
+  - $m$ is the slope
+  - $b$ is the intercept
+  
+* .orange[Regression equation]: $Y = \alpha + \beta X + \epsilon$
+  - $\alpha$ is the intercept
+  - $\beta$ is the slope
+  - $\epsilon$ is the error term
+]
+---
+
+# Interpretation
+
+.font150[
+* $Y$:  dependent/response/outcome variable
+
+* $\alpha$: value of $Y$ when $X = 0$
+
+* $\beta$: increase/decrease in $Y$ when $X$ varies by one unit
+
+* $\alpha + \beta X$: average value of $Y$ at a given value of $X$
+
+* $\epsilon$: difference between each point and the fitted line. Assumed to have a mean of zero
+
+* **BUT..**
+]
+---
+
+# Least Squares
+
+.font150[
+* We don't know the true .orange[data generating process] (DGP)
+
+* So we have to _estimate_ the equation using collected data
+
+* Estimates are denoted with little hats: $\hat{\alpha}$, $\hat{\beta}$ (read as "alpha hat", "beta hat")
+
+* We can use $\hat{\alpha}$, $\hat{\beta}$ and $X$ to create _predicted values of_ $Y$
+
+* $\hat{Y} = \hat{\alpha} + \hat{\beta}X$, predicted/fitted value
+
+* $\hat{\epsilon} = Y - \hat{Y} =$ true $Y$ - predicted $Y$
+
+* $\hat{\epsilon}$ is a good measure of model fit
+]
+---
+
+# How Do We Estimate the Parameters?
+
+.font150[
+* .orange[We minimize the _sum of the squared residuals (SSR)_]
+
+$$\textsf{SSR} = \sum_{i=1}^n \hat\epsilon_i^2 = \sum_{i=1}^n (Y_i - \hat{Y_{i}})^2 = \sum_{i=1}^n (Y_i - \hat\alpha - \hat\beta X_i)^2$$
+* This also minimizes the root mean squared error: $RMSE = \sqrt{\frac{1}{n}\textsf{SSR}}$
+]
+---
+
+# Regression by Hand
+
+.font150[
+* $\hat\alpha = \bar{Y} - \hat\beta \bar{X}$
+
+* $\hat\beta = \frac{\sum_{i=1}^n (Y_i - \overline{Y})(X_i - \overline{X})}{\sum_{i=1}^n (X_i - \overline{X})^2}$
+
+OR...
+]
+---
+
+# Regression by Hand
+
+.font150[
+OR...
+
+* $\hat\beta = \textsf{correlation of X and Y} \times \frac{\textsf{standard deviation of Y}}{\textsf{standard deviation of X}}$
+
+* Regression line always goes through the point of averages $\hat{X},\hat{Y}$
+
+* $\hat{Y}  = (\overline{Y} - \hat\beta \overline{X}) + \hat\beta \overline{X} = \overline{Y}$
+]
+---
+
+# Example
+
+.font120[
+* R makes it very easy to estimate linear models with `lm()`
+
+```{r lm01,fig.align="center",tidy=F,warning=F,message=F,cache=T}
+lm(Child.Mortality ~ log(GDP), data = bivariate)
+```
+* $Y = 276.58 - 26.13X + \epsilon$
+
+* $Y$ is child mortality in 100,000 births
+
+* .orange[How can we interpret the equation?]
+]
+---
+
+# GDP Per Capita and Life Expectancy
+
+.font120[
+```{r gapminder-lm,fig.align="center",tidy=F,warning=F,message=F,cache=T}
+library(gapminder)
+gapminder$gdppc1000 <- gapminder$gdpPercap/1000 # use $1,000s as unit
+lm(lifeExp ~ gdppc1000, data = gapminder)   # life expectancy ~ GDPpc
+```
+How would you interpret that result?
+]
+---
+
+class: inverse, center, middle
+
+# Your turn: instead of the correlation you choose for the USArrests, now run a regression. Interpret the results
+
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=720px></html>  
+---
+
+class: inverse, center, middle
+
+# R-Squared
+
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=720px></html>  
+---
+
+# R-Squared
+
+.font140[
+* How well does our regression line fit the data?
+
+* $R^2$, _coefficient of determination_
+
+$$R^2 = 1 - \frac{\textsf{SSR}}{\textsf{Total sum of squares (TSS)}}  \ = \ 1 - \frac{\sum_{i=1}^n \hat\epsilon_i^2}{\sum_{i=1}^n (Y_i - \overline{Y})^2}$$
+* $R^2$ is also defined as the _explained variance_ in Y
+
+* Goes from 0 to 1
+
+* We can use `summary(model)` to see it
+]
+---
+
+# Example
+
+.font110[
+```{r rsq2,fig.align="center",tidy=F,warning=F,message=F,cache=T,highlight.output=18}
+model1 <- lm(lifeExp ~ gdppc1000, data = gapminder)
+summary(model1)
+```
+]
+---
+
+# Caveats
+
+.font150[
+* $R^2$ cannot be used to compare models estimated with different samples
+
+* $R^2$ .orange[does not] indicate whether:
+  - _the independent variable causes the dependent variable_
+  - the model is correctly specified 
+  - the model suffers from ommitted variable bias
+  - there are enough data points to make a valid conclusion
+]
+
+
+---
+
+class: inverse, center, middle
+
+# Your turn: what is the $R^2$ of the regression you ran?
+
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=720px></html>  
+---
+
+class: inverse, center, middle
+
+# Linear Models and RCTs
+
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=720px></html>  
+---
+
+# Linear Models and RCTs
+
+.font150[
+* .orange[When the data come from a randomized experiment,] model parameters have a causal interpretation
+
+* Treatment status as the independent variable (0 or 1)
+  - 0 indicates control group
+  - 1 indicates treatment group
+]
+--
+.font150[
+* $Y = \alpha + \beta \times treatment + \epsilon$
+]
+--
+.font150[
+* What is the interpretation of $\alpha$ here?
+
+* What is the interpretation of $\beta$ here?
+]
+---
+
+# Women as Policy Makers
+
+.font120[
+* Do women promote different policies than men?
+
+* Observational studies: compare policies adopted by female politicians with those adopted by male politicians
+
+* Randomized natural experiment:
+  - one third of village council heads reserved for women
+  - assigned at the level of Gram Panchayat (village council) since mid-1990s
+  - each GP has multiple villages
+
+* Hypothesis: female politicians represent the interests of female voters
+
+* Female voters complain about drinking water while male voters complain about irrigation
+]
+---
+
+# Data
+
+| Name         | Description                                                                                                                |
+| :----------- | :------------------------------------------------------------------------------------------------------------------------- |
+| `GP`         | An identifier for the Gram Panchayat (village council)                                                                     |
+| `village`    | identifier for each village                                                                                                |
+| `reserved`   | binary variable indicating whether the GP was reserved for women leaders or not                                            |
+| `female`     | binary variable indicating whether the GP had a female leader or not                                                       |
+| `irrigation` | variable measuring the number of new or repaired irrigation facilities in the village since the reserve policy started     |
+| `water`      | variable measuring the number of new or repaired drinking-water facilities in the village since the reserve policy started |
+
+```{r data,fig.align="center",tidy=F,warning=F,message=F,cache=T}
+women <- read.csv("https://raw.githubusercontent.com/umbertomig/intro-prob-stat-FGV/master/datasets/women.csv")
+names(women)
+```
+---
+
+# Models
+
+.font110[
+* Does the reservation policy increase female politicians?
+
+```{r m1,fig.align="center",tidy=F,warning=F,message=F,cache=T}
+tapply(women$female, women$reserved, mean)
+```
+
+* Does it change the policy outcomes?
+```{r m2,fig.align="center",tidy=F,warning=F,message=F,cache=T}
+# drinking-water facilities
+tapply(women$water, women$reserved, mean)
+
+# irrigation facilities
+tapply(women$irrigation, women$reserved, mean)
+```
+]
+---
+
+# Slope Coefficient = Difference-in-Means
+
+.font120[
+```{r women03,fig.align="center",tidy=F,warning=F,message=F,cache=T,highlight.output=2}
+tapply(women$water, women$reserved, mean)
+```
+```{r women04,fig.align="center",tidy=F,warning=F,message=F,cache=T,highlight.output=1}
+mean(women$water[women$reserved == 1]) - mean(women$water[women$reserved == 0])
+```
+```{r women05,fig.align="center",tidy=F,warning=F,message=F,cache=T,highlight.output=7}
+lm(water ~ reserved, data = women)
+```
+]
+---
+
+
+# Resume Experiment Revisited
+
+.font100[
+
+* Our turn: let's analyze the resume dataset!
+
+1. Load the dataset
+2. Run a regression on callback and race
+
+```{r soc01,fig.align="center",tidy=F,warning=F,message=F,cache=T}
+# Need to get these results: baseline (black) + 
+# the effect of having a white-sounding name
+0.06448 + 0.03203
+```
+]
+---
+
+# Call Rates and Gender
+
+.font110[
+* Now, let's add a gender indicator
+
+1. Run a regression on callback rates and gender
+]
+---
+
+# Race + Gender
+
+.font120[
+
+* Now, run a regression for both gender and race...
+
+```{r soc02a,fig.align="center",tidy=F,warning=F,message=F,cache=T}
+# Call rates for a white male
+ 0.066534 + 0.032130 - 0.009128
+```
+* Regression Equation: $Y = 0.066 + 0.032*white - 0.009*male + \epsilon$
+]
+---
+
+# Interpreting Multiple Predictors
+
+.font150[
+* .orange[Ceteris Paribus]: _holding everything else constant_
+
+* Let's interpret the coefficient for _white_ in $Y = 0.066 + 0.032 \times white - 0.009 \times male + \epsilon$
+
+* We say: "_all else equal, having a white-sounding name increases the change of getting a job call in about 3%. Since candidates with black-sounding names a job call rate of about 6%, candidates with white-sounding names are 50% more likely to get a call_"
+]
+
+---
+
+# Adjusted R-Squared
+
+.font140[
+* When we have more than one independent variable, we need to modify the $R^2$ formula to account for those additional variables
+
+* $R^2$ measures the overall impact of _all_ variables at once, but some might just add noise to the model
+
+* Every predictor added to a model increases $R^2$ and never decreases it
+
+* Adjusted $R^2$ compensates for the addition of variables and only increases _if the new term enhances the model_
+
+* It is usually lower than regular $R^2$ but not much
+]
+
+---
+
+class: inverse, center, middle
+
+# Questions?
+
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=720px></html>  
+---
+
+class: inverse, center, middle
+
+# See you on Thursday!
+
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=720px></html>  
