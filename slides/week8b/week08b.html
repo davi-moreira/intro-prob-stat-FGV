@@ -5,9 +5,9 @@
     <meta charset="utf-8" />
     <meta name="author" content="Umberto Mignozzetti" />
     <meta name="date" content="2020-05-07" />
-    <link href="week08a_files/remark-css/default.css" rel="stylesheet" />
-    <link href="week08a_files/remark-css/metropolis.css" rel="stylesheet" />
-    <link href="week08a_files/remark-css/metropolis-fonts.css" rel="stylesheet" />
+    <link href="week08b_files/remark-css/default.css" rel="stylesheet" />
+    <link href="week08b_files/remark-css/metropolis.css" rel="stylesheet" />
+    <link href="week08b_files/remark-css/metropolis-fonts.css" rel="stylesheet" />
   </head>
   <body>
     <textarea id="source">
@@ -323,7 +323,7 @@ head(congress)
 
 
 ```r
-congress %&gt;%
+q &lt;- congress %&gt;%
   filter(congress %in% c(80, 112),
          party %in% c("Democrat", "Republican")) %&gt;%
   ggplot(aes(x = dwnom1, y = dwnom2, colour = party)) +
@@ -332,287 +332,218 @@ congress %&gt;%
                      limits = c(-1.5, 1.5)) +
   scale_x_continuous("economic liberalism/conservatism",
                      limits = c(-1.5, 1.5))
+q
 ```
 
-&lt;img src="week08a_files/figure-html/unnamed-chunk-2-1.png" style="display: block; margin: auto;" /&gt;
+&lt;img src="week08b_files/figure-html/unnamed-chunk-2-1.png" style="display: block; margin: auto;" /&gt;
 
 ---
 
-# Correlations and Scatter Plots
+# Polarization: coloring the parties
 
-.center[![:scale 70%](correlations.png)]
+
+```r
+scale_colour_parties &lt;-
+  scale_colour_manual(values = c(Democrat = "blue",
+                                 Republican = "red",
+                                 Other = "green"))
+q + scale_colour_parties
+```
+
+&lt;img src="week08b_files/figure-html/unnamed-chunk-3-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Polarization: for all legislatures
+
+
+```r
+congress %&gt;%
+  ggplot(aes(x = dwnom1, y = dwnom2, colour = party)) +
+  geom_point() + facet_wrap(~ congress) + coord_fixed() +
+  scale_y_continuous("racial liberalism/conservatism",
+                     limits = c(-2, 2)) +
+  scale_x_continuous("economic liberalism/conservatism",
+                     limits = c(-2, 2))
+```
+
+&lt;img src="week08b_files/figure-html/unnamed-chunk-4-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+# Polarization: median distance over time
+
+
+```r
+congress %&gt;%
+  group_by(congress, party) %&gt;%
+  summarise(dwnom1 = mean(dwnom1)) %&gt;%
+  filter(party %in% c("Democrat", "Republican")) %&gt;%
+  ggplot(aes(x = congress, y = dwnom1,
+             colour = fct_reorder2(party, congress, dwnom1)))+
+  geom_line() + scale_colour_parties +
+  labs(y = "DW-NOMINATE score (1st Dimension)", x = "Congress", colour = "Party")
+```
+
+&lt;img src="week08b_files/figure-html/unnamed-chunk-5-1.png" style="display: block; margin: auto;" /&gt;
 ---
 
 class: inverse, center, middle
 
-# Your Turn: run a correlation for the USArrests data in R.
+# Your turn: compute the median distance for the second (racial) dimension.
 
 &lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=720px&gt;&lt;/html&gt;  
+
 ---
 
-class: inverse, center, middle
-
-# Linear Regression
-
-&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=720px&gt;&lt;/html&gt;  
----
-
-# From Correlation to Linear Regression
+# K-Means
 
 .font150[
-* Linear regression allows us to create predictions
+* Suppose you work on consulting, and have the following problem
 
-* Linear regression specifies direction of relationship
+* Your boss wants to know which countries are similar in terms of risk
 
-* Linear regression allows us to examine more than two variables at the same time (statistical control)
+* She wants you to group countries that present similarities, in a way that groups are different from each other, but within groups, as similar as possible.
+
+* You can use K-Means!
+
+* Let's try this for the US Congres...
 ]
 ---
 
-# Linear Regression
+# K-Means Algorithm
 
-.font150[
-* Regression has .orange[one dependent (y)] and _for now_ .orange[one independent (x) variable]
-
-* Goal of regression is to approximate the (linear) relationship between X and Y as best as possible
-
-* Regression is the mathematical model to draw best fitting line through cloud of points
-
-* In R: `lm(Y ~ X, data = yourdataset)`
-]
+.center[![:scale 70%](kmeansalg.png)]
 ---
 
-# Linear Regression
+# K-Means: Creating the datasets and estimating two clusters
 
 .font100[
 
 ```r
-plot(log(bivariate$GDP), bivariate$Child.Mortality, pch = 19, 
-     main = "Log GDP Per Capita and Child Mortality",
-     xlab = "Log GDP Per Capita", ylab = "Child Mortality")
-*abline(lm(Child.Mortality ~ log(GDP), data = bivariate), col = "red", lwd = 2)
+dwnom80 &lt;- cbind(congress$dwnom1[congress$congress == 80],
+congress$dwnom2[congress$congress == 80])
+head(dwnom80, 2)
 ```
 
-&lt;img src="week08a_files/figure-html/gap02-1.png" style="display: block; margin: auto;" /&gt;
-]
-
-.font120[For each x we have a prediction of y: .orange[what would we expect y to be given the value of x?]
-]
----
-
-# What is the equation of a line?
-
-.font150[
-* `\(y = mx + b\)`
-  - `\(m\)` is the slope
-  - `\(b\)` is the intercept
-  
-* .orange[Regression equation]: `\(Y = \alpha + \beta X + \epsilon\)`
-  - `\(\alpha\)` is the intercept
-  - `\(\beta\)` is the slope
-  - `\(\epsilon\)` is the error term
-]
----
-
-# Interpretation
-
-.font150[
-* `\(Y\)`:  dependent/response/outcome variable
-
-* `\(\alpha\)`: value of `\(Y\)` when `\(X = 0\)`
-
-* `\(\beta\)`: increase/decrease in `\(Y\)` when `\(X\)` varies by one unit
-
-* `\(\alpha + \beta X\)`: average value of `\(Y\)` at a given value of `\(X\)`
-
-* `\(\epsilon\)`: difference between each point and the fitted line. Assumed to have a mean of zero
-
-* **BUT..**
-]
----
-
-# Least Squares
-
-.font150[
-* We don't know the true .orange[data generating process] (DGP)
-
-* So we have to _estimate_ the equation using collected data
-
-* Estimates are denoted with little hats: `\(\hat{\alpha}\)`, `\(\hat{\beta}\)` (read as "alpha hat", "beta hat")
-
-* We can use `\(\hat{\alpha}\)`, `\(\hat{\beta}\)` and `\(X\)` to create _predicted values of_ `\(Y\)`
-
-* `\(\hat{Y} = \hat{\alpha} + \hat{\beta}X\)`, predicted/fitted value
-
-* `\(\hat{\epsilon} = Y - \hat{Y} =\)` true `\(Y\)` - predicted `\(Y\)`
-
-* `\(\hat{\epsilon}\)` is a good measure of model fit
-]
----
-
-# How Do We Estimate the Parameters?
-
-.font150[
-* .orange[We minimize the _sum of the squared residuals (SSR)_]
-
-`$$\textsf{SSR} = \sum_{i=1}^n \hat\epsilon_i^2 = \sum_{i=1}^n (Y_i - \hat{Y_{i}})^2 = \sum_{i=1}^n (Y_i - \hat\alpha - \hat\beta X_i)^2$$`
-* This also minimizes the root mean squared error: `\(RMSE = \sqrt{\frac{1}{n}\textsf{SSR}}\)`
-]
----
-
-# Regression by Hand
-
-.font150[
-* `\(\hat\alpha = \bar{Y} - \hat\beta \bar{X}\)`
-
-* `\(\hat\beta = \frac{\sum_{i=1}^n (Y_i - \overline{Y})(X_i - \overline{X})}{\sum_{i=1}^n (X_i - \overline{X})^2}\)`
-
-OR...
-]
----
-
-# Regression by Hand
-
-.font150[
-OR...
-
-* `\(\hat\beta = \textsf{correlation of X and Y} \times \frac{\textsf{standard deviation of Y}}{\textsf{standard deviation of X}}\)`
-
-* Regression line always goes through the point of averages `\(\hat{X},\hat{Y}\)`
-
-* `\(\hat{Y}  = (\overline{Y} - \hat\beta \overline{X}) + \hat\beta \overline{X} = \overline{Y}\)`
-]
----
-
-# Example
-
-.font120[
-* R makes it very easy to estimate linear models with `lm()`
-
+```
+##        [,1]  [,2]
+## [1,] -0.276 0.016
+## [2,] -0.026 0.796
+```
 
 ```r
-lm(Child.Mortality ~ log(GDP), data = bivariate)
+dwnom112 &lt;- cbind(congress$dwnom1[congress$congress == 112],
+congress$dwnom2[congress$congress == 112])
+head(dwnom80, 2)
 ```
 
 ```
-## 
-## Call:
-## lm(formula = Child.Mortality ~ log(GDP), data = bivariate)
-## 
-## Coefficients:
-## (Intercept)     log(GDP)  
-##      276.58       -26.13
+##        [,1]  [,2]
+## [1,] -0.276 0.016
+## [2,] -0.026 0.796
 ```
-* `\(Y = 276.58 - 26.13X + \epsilon\)`
-
-* `\(Y\)` is child mortality in 100,000 births
-
-* .orange[How can we interpret the equation?]
-]
----
-
-# GDP Per Capita and Life Expectancy
-
-.font120[
 
 ```r
-library(gapminder)
-gapminder$gdppc1000 &lt;- gapminder$gdpPercap/1000 # use $1,000s as unit
-lm(lifeExp ~ gdppc1000, data = gapminder)   # life expectancy ~ GDPpc
+## k-means with 2 clusters
+k80two.out &lt;- kmeans(dwnom80, centers = 2, nstart = 5)
+k112two.out &lt;- kmeans(dwnom112, centers = 2, nstart = 5)
 ```
-
-```
-## 
-## Call:
-## lm(formula = lifeExp ~ gdppc1000, data = gapminder)
-## 
-## Coefficients:
-## (Intercept)    gdppc1000  
-##     53.9556       0.7649
-```
-How would you interpret that result?
 ]
+
 ---
 
-class: inverse, center, middle
+# K-Means: final centroids
 
-# Your turn: instead of the correlation you choose for the USArrests, now run a regression. Interpret the results
-
-&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=720px&gt;&lt;/html&gt;  
----
-
-class: inverse, center, middle
-
-# R-Squared
-
-&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=720px&gt;&lt;/html&gt;  
----
-
-# R-Squared
-
-.font140[
-* How well does our regression line fit the data?
-
-* `\(R^2\)`, _coefficient of determination_
-
-`$$R^2 = 1 - \frac{\textsf{SSR}}{\textsf{Total sum of squares (TSS)}}  \ = \ 1 - \frac{\sum_{i=1}^n \hat\epsilon_i^2}{\sum_{i=1}^n (Y_i - \overline{Y})^2}$$`
-* `\(R^2\)` is also defined as the _explained variance_ in Y
-
-* Goes from 0 to 1
-
-* We can use `summary(model)` to see it
-]
----
-
-# Example
-
-.font110[
+.font100[
 
 ```r
-model1 &lt;- lm(lifeExp ~ gdppc1000, data = gapminder)
-summary(model1)
+## final centroids
+k80two.out$centers
 ```
 
 ```
-## 
-## Call:
-## lm(formula = lifeExp ~ gdppc1000, data = gapminder)
-## 
-## Residuals:
-##     Min      1Q  Median      3Q     Max 
-## -82.754  -7.758   2.176   8.225  18.426 
-## 
-## Coefficients:
-##             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept) 53.95556    0.31499  171.29   &lt;2e-16 ***
-## gdppc1000    0.76488    0.02579   29.66   &lt;2e-16 ***
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## Residual standard error: 10.49 on 1702 degrees of freedom
-## Multiple R-squared:  0.3407,	Adjusted R-squared:  0.3403 
-*## F-statistic: 879.6 on 1 and 1702 DF,  p-value: &lt; 2.2e-16
+##          [,1]       [,2]
+## 1 -0.04843704  0.7827259
+## 2  0.14681029 -0.3389293
+```
+
+```r
+k112two.out$centers
+```
+
+```
+##         [,1]       [,2]
+## 1  0.6776736 0.09061157
+## 2 -0.3912687 0.03260696
 ```
 ]
+
+
 ---
 
-# Caveats
+# Interation with parties
+.font100[
 
-.font150[
-* `\(R^2\)` cannot be used to compare models estimated with different samples
+```r
+## number of observations for each cluster by party
+table(party = congress$party[congress$congress == 80],
+cluster = k80two.out$cluster)
+```
 
-* `\(R^2\)` .orange[does not] indicate whether:
-  - _the independent variable causes the dependent variable_
-  - the model is correctly specified 
-  - the model suffers from ommitted variable bias
-  - there are enough data points to make a valid conclusion
+```
+##             cluster
+## party          1   2
+##   Democrat   132  62
+##   Other        0   2
+##   Republican   3 247
+```
+
+```r
+table(party = congress$party[congress$congress == 112],
+cluster = k112two.out$cluster)
+```
+
+```
+##             cluster
+## party          1   2
+##   Democrat     0 200
+##   Other        0   0
+##   Republican 242   1
+```
 ]
 
+---
+
+# Now K-Means with four clusters
+
+.font100[
+
+```r
+## k-means with 4 clusters
+k80four.out &lt;- kmeans(dwnom80, centers = 4, nstart = 5)
+k112four.out &lt;- kmeans(dwnom112, centers = 4, nstart = 5)
+## plotting the results using the labels and limits defined earlier
+plot(dwnom80, col = k80four.out$cluster + 1, main = "80th Congress")
+## plotting the centroids
+points(k80four.out$centers, pch = 8, cex = 2)
+```
+
+&lt;img src="week08b_files/figure-html/unnamed-chunk-9-1.png" style="display: block; margin: auto;" /&gt;
+
+```r
+## 112th Congress
+plot(dwnom112, col = k112four.out$cluster + 1, main = "112th Congress")
+points(k112four.out$centers, pch = 8, cex = 2)
+```
+
+&lt;img src="week08b_files/figure-html/unnamed-chunk-9-2.png" style="display: block; margin: auto;" /&gt;
+]
 
 ---
 
 class: inverse, center, middle
 
-# Your turn: what is the `\(R^2\)` of the regression you ran?
+# Your turn: data wrangling!
 
 &lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=720px&gt;&lt;/html&gt;  
 ---
