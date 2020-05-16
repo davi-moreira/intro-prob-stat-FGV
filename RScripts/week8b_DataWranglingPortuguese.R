@@ -149,6 +149,9 @@
 #  distinct    | Preserva todos os casos que tem
 #              | variação distinta dos outros
 
+PErisk <- read.csv('https://raw.githubusercontent.com/umbertomig/intro-prob-stat-FGV/master/datasets/PErisk.csv')
+library(tidyverse)
+
 #### `select`
 
 # Suponha que queremos selecionar somente as variáveis 
@@ -160,9 +163,15 @@ head(PErisk_so_quanti)
 # Ou seja, a sintaxe foi a seguinte:
 ### banco_pos_selecao <- select(banco_inicial, var1, var2, var3, ...)
 
+my_select <- select(PErisk, country, courts, barb2)
+head(my_select)
+
 # SELECT POR CARACTERISTICAS
 PErisk_so_com_co <- select(PErisk, starts_with('co'))
 head(PErisk_so_com_co)
+
+my_select <- select(PErisk, country, starts_with('p'))
+head(my_select)
 
 # E a função `starts_with` seleciona somente as 
 # variáveis cujo nome começa com `co`, no caso 
@@ -180,6 +189,9 @@ head(PErisk_termina_com_2)
 PErisk_contem_exp <- select(PErisk, contains('exp'))
 head(PErisk_contem_exp)
 
+my_select <- select(PErisk, contains('r'))
+head(my_select)
+
 # NOMES:
 names(PErisk)
 
@@ -188,11 +200,17 @@ names(PErisk)
 PErisk_entre_vars <- select(PErisk, courts:prscorr2)
 head(PErisk_entre_vars)
 
+my_select <- select(PErisk, barb2:gdpw2)
+head(my_select)
+
 # E se usarmos o sinal de menos (`-`) em frente 
 # à seleção (coloque a seleção entre parênteses), 
 # pegamos todas as variáveis menos as que especificamos:
 PErisk_menos_entre_vars <- select(PErisk, -(courts:prscorr2))
 head(PErisk_menos_entre_vars)
+
+my_select <- select(PErisk, -barb2)
+head(my_select)
 
 # E portanto, esses são os métodos de seleção:
 
@@ -210,6 +228,9 @@ head(PErisk_menos_entre_vars)
 PErisk_barb_renome <- select(PErisk, premio_mercado_negro = barb2)
 head(PErisk_barb_renome)
 
+my_select <- select(PErisk, log_pib_per_capita = gdpw2)
+head(my_select)
+
 # E a mesma lógica vale para um grupo de variáveis:
 PErisk_renome <- select(PErisk, vars = courts:prscorr2)
 head(PErisk_renome)
@@ -217,9 +238,17 @@ head(PErisk_renome)
 #### `rename`
 
 # É a função que usamos para renomear variáveis no banco.
-PErisk_renomeado <- rename(PErisk, pais = country, 
+PErisk_renomeado <- rename(PErisk, vars = country, 
                            indepjud = courts)
 head(PErisk_renomeado)
+
+my_rename <- rename(PErisk, ctry = country,
+                    jud = courts,
+                    bmp = barb2,
+                    exprRisk = prsexp2,
+                    corrRisk = prscorr2,
+                    logGDPpc = gdpw2)
+head(my_rename)
 
 #### `filter`
 
@@ -227,6 +256,9 @@ head(PErisk_renomeado)
 PErisk_filtrado <- filter(PErisk, courts == 1)
 head(PErisk_filtrado)
 dim(PErisk_filtrado)
+
+my_filter <- filter(PErisk, prscorr2 == 5)
+head(my_filter)
 
 # Caso você precise filtrar de acordo com mais de 
 # uma condição, por exemplo, cortes independentes 
@@ -264,11 +296,20 @@ dim(PErisk_filtrado2)
 PErisk_ordenadoPIB <- arrange(PErisk, gdpw2)
 head(PErisk_ordenadoPIB)
 
+my_arrange <- arrange(PErisk, barb2)
+head(my_arrange, 20)
+
 # Ou também podemos reverter a ordem:
 PErisk_ordenadoPIB2 <- arrange(PErisk, desc(gdpw2))
 head(PErisk_ordenadoPIB2)
 
 # A função `desc` entende que queremos ordenar em ordem decrescente.
+
+my_arrange <- arrange(PErisk, desc(barb2))
+head(my_arrange, 10)
+
+my_arrange <- arrange(PErisk, prsexp2, desc(barb2))
+head(my_arrange, 10)
 
 #### `mutate` e `transmute`
 
@@ -283,12 +324,20 @@ head(PErisk_ordenadoPIB2)
 PErisk_PIBemDolares <- mutate(PErisk, PIBpc = exp(gdpw2))
 head(PErisk_PIBemDolares)
 
+my_mutate <- mutate(PErisk, crazy = gdpw2/barb2)
+head(my_mutate)
+
 # Ainda, podemos usar essas funções para criar 
 # variáveis que fazem comparações, e retornam 
 # resultados dessas comparações:
-PErisk_transmuted2 <- mutate(PErisk_transmuted, 
-                             riscoNota = ifelse(risco>5, 'Alto', 'Baixo'))
-head(PErisk_transmuted2)
+PErisk_mutated2 <- mutate(PErisk, 
+                          riscoExpNota = 
+                            ifelse(prsexp2>3, 'Low', 'High'))
+head(PErisk_mutated2)
+
+## Transmute
+riskData <- transmute(PErisk, country, risk = prsexp2 + prscorr2)
+head(riskData)
 
 #### `group_by` + `summarize`
 
@@ -300,8 +349,7 @@ head(PErisk_transmuted2)
 PErisk_summarized <- summarize(PErisk, 
                                courts_media = mean(courts, na.rm=T),
                                barb2_media = mean(barb2, na.rm=T),
-                               gdpw2_media = mean(gdpw2, na.rm=T)
-)
+                               gdpw2_media = mean(gdpw2, na.rm=T))
 head(PErisk_summarized)
 
 # E aqui usamos a média simples `mean`, 
@@ -333,9 +381,13 @@ head(PErisk_summarized)
 PErisk_summarized2 <- summarize(PErisk, 
                                 courts_mediana = median(courts, na.rm=T),
                                 barb2_mediana = median(barb2, na.rm=T),
-                                gdpw2_mediana = median(gdpw2, na.rm=T)
-)
+                                gdpw2_mediana = median(gdpw2, na.rm=T))
 head(PErisk_summarized2)
+
+my_summarize <- summarize(PErisk,
+                          barb2_min = min(barb2),
+                          gdpw2_min = min(gdpw2))
+my_summarize
 
 # No entanto, muitas vezes precisamos calcular 
 # essas estatísticas de acordo com grupos de 
@@ -351,7 +403,21 @@ PErisk_agrupado <- summarize(PErisk_agrupado,
                              barb2_media = mean(barb2, na.rm=T),
                              gdpw2_media = mean(gdpw2, na.rm=T),
                              ncasos = n())
-head(PErisk_agrupado)
+PErisk_agrupado
+
+my_summarize <- group_by(PErisk, prscorr2)
+my_summarize <- summarize(my_summarize, 
+                          barb2_media = mean(barb2, na.rm=T),
+                          gdpw2_media = mean(gdpw2, na.rm=T),
+                          ncasos = n())
+my_summarize
+
+## find average of barb2 and gdpw2 grouping by courts
+my_summarize <- group_by(PErisk, courts)
+my_summarize <- summarize(my_summarize, 
+                          barb2_media = mean(barb2, na.rm=T),
+                          gdpw2_media = mean(gdpw2, na.rm=T))
+my_summarize
 
 # O agrupamento não tem efeito prático, mas diz 
 # ao sistema que, caso utilizemos a função 
@@ -374,25 +440,32 @@ head(PErisk_agrupado)
 # Por exemplo, vamos extrair dez casos do banco `PErisk`:
 sample_n(PErisk, 10)
 
+my_sample <- sample_n(PErisk, 5)
+my_sample
+
 # As vezes, por questões de replicação, ou para evitar 
 # viéses, podemos retirar amostras com reposição (amostra 
 # com reposição significa: toda vez que tirarmos 
 # bolinhas de um saco, devolvemos a bolinha e sorteamos 
 # novamente). Nesse caso:
-sample_n(PErisk, 10, replace=T)
+sample_n(PErisk, 20, replace=T)
 
 # E portanto, Venezuela foi sorteada duas vezes. 
 # Ainda, podemos usar a função de agrupamento, 
 # se quisermos que o sorteio seja feito levando 
 # em conta as frequências dentro de cada grupo:
 PErisk_agrupado <- group_by(PErisk, courts)
-sample_n(PErisk_agrupado, 5)
+data.frame(sample_n(PErisk_agrupado, 5))
+
+my_sample <- group_by(PErisk, prscorr2)
+my_sample <- sample_n(my_sample, 2)
+my_sample
 
 # E isso seleciona cinco casos que tem judiciários 
 # independentes, e cinco casos que não tem judiciários 
 # independentes. Ainda, podemos amostrar frações do 
 # banco de dados usando a função `sample_frac`:
-sample_frac(PErisk, 0.1)
+sample_frac(PErisk, 0.05)
 
 # E tiramos assim uma amostra de 10% dos dados 
 # (ou seja, 6 dos 62 casos de `PErisk`).
@@ -409,7 +482,9 @@ sample_frac(PErisk, 0.1)
 # 3. Calcular as médias das variáveis e retornar os resultados.
 
 # Uma vez decididas as tarefas, o uso fica simples:
-PErisk_piped <- PErisk %>% # Primeiro informamos o banco de dados
+
+PErisk_piped <- 
+  PErisk %>% # Primeiro informamos o banco de dados
   filter(prscorr2 < 3) %>% # Passo 1
   group_by(courts) %>% # Passo 2
   summarize(barb2_media = mean(barb2, na.rm=T),
@@ -417,11 +492,24 @@ PErisk_piped <- PErisk %>% # Primeiro informamos o banco de dados
             gdpw2dol_media = exp(mean(gdpw2, na.rm=T))) # Passo 3
 PErisk_piped
 
+## Filter by expropriation risk -> group by corruption -> 
+##  take medians of barb2 and gdpw2
+
 # E portanto, o operador `%>%` (*pipe*) permite montarmos 
 # uma função composta. Como em matemática temos funções 
 # compostas, no processamento de dados, em varias etapas, 
 # também podemos fazer funções compostas usando essa idéia de 
 # tubos e tubulações.
+
+PErisk %>%
+  mutate(risk = prsexp2+prscorr2) %>%
+  mutate(risk = 10-risk) %>%
+  group_by(courts) %>%
+  summarize(avgbarb2 = mean(barb2),
+            sdbarb2 = sd(barb2),
+            meanrisk = mean(risk),
+            sdrisk = sd(risk)) %>%
+  data.frame()
 
 #### `distinct`
 
