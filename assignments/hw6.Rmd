@@ -48,8 +48,8 @@ Note that most municipalities have no cases of the disease. What happens if you 
 
 ## Question 9
 
-Create a variable that codes the ideological positions, based on the politician's parties. Use the three-way category: `left`, `center`, and `right`. Justify your choices. Provide a table with the frequency by each category. Run a regression for the new variable, to investigate whether ideological position influences in the COVID casualties and infections. Provide a brief interpretation.
+Create a variable that codes the ideological positions, based on the politician's parties. Use the three-way category: `left`, `center`, and `right`. Justify your choices. Provide a table with the frequency by each category. Run a regression for the new variable, to investigate whether ideological position influences the COVID casualties and infections. Provide a brief interpretation.
 
 ## Question 10
 
-Using `ifelse` creates a variable `collegedegree`, which is `Yes` when the mayor has college degree, and `No` otherwise. Run a regression for the new variable, to investigate whether education influences the COVID casualties and infections. Provide a brief interpretation.
+Using `ifelse` creates a variable `collegedegree`, which is `Yes` when the mayor has a college degree, and `No` otherwise. Run a regression for the new variable, to investigate whether education influences the COVID casualties and infections. Provide a brief interpretation.
