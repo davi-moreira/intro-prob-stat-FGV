@@ -120,7 +120,7 @@ More at <https://fivethirtyeight.com/features/the-media-has-a-probability-proble
 
 * What are the chances you win the lottery?
 
-* What is the probabilty of getting an A in POLS1600?
+* What is the probabilty of getting an 10 in my class?
 ]
 ---
 
@@ -580,7 +580,7 @@ class: inverse, center, middle
 --
 .font130[
 ```{r cv01,fig.align="center",tidy=F,warning=F,message=F,cache=T}
-resume <- read.csv("https://raw.githubusercontent.com/pols1600/pols1600.github.io/master/datasets/causality/resume.csv")
+resume <- read.csv("https://raw.githubusercontent.com/umbertomig/intro-prob-stat-FGV/master/datasets/resume.csv")
 names(resume)
 head(resume)
 ```
@@ -648,7 +648,7 @@ prop.table(table(resume$race))
 # Another Example
 
 .font130[
-| Annual income     | Didn't Take POLS1600 | Took POLS1600 | TOTAL |
+| Annual income     | Didn't Take Stats    | Took Stats    | TOTAL |
 | :---------------- | :------------------- | :------------ | :---- |
 | Under 50,00       | 36                   | 24            | 60    |
 | 50,000 to 100,000 | 109                  | 56            | 165   |
@@ -659,11 +659,11 @@ prop.table(table(resume$race))
 ]
 --
 .font130[
-* What is the probability of a student making over $100,000, conditional that she took POLS1600?
+* What is the probability of a student making over $100,000, conditional that she took Stats?
 ]
 --
 .font130[
-* What is the probability of a having taken POLS1600, conditional on  making over $100,000?
+* What is the probability of a having taken Stats, conditional on  making over $100,000?
 ]
 ---
 
