@@ -1,0 +1,77 @@
+---
+title: "Homework 7 -- Intro to Probability and Statistics"
+author: "Your name here"
+output: pdf_document
+---
+
+# Instructions:
+
+**Due:** 05/28 at 11:59PM.
+
+**What am I expecting?** An R Markdown with the answers.
+
+**Have fun!**
+
+## Question 1
+
+An urn has two white balls (W) and three red balls (R). You draw a ball from the urn. If it is white, you flip a coin. If it is red, you throw it back in the urn and draw another ball. What is the sample space of this experiment?
+
+## Question 2
+
+Suppose you toss two dices. Consider two events:
+
+- A: the sum of the numbers in both dices is equal to 9
+- B: the number in the first die is greater than or equal 4.
+
+Define:
+
+1. The elements of $A$
+2. The elements of $B$
+3. The elements of $A \cap B$
+4. The elements of $A \cup B$
+5. The elements of $A^C$
+
+## Question 3
+
+The probability that student $A$ solves a given problem is $\dfrac{2}{3}$. The probability that student $B$ solves the same problem is $\dfrac{3}{4}$. If both try to solve the problem independently, what is the chance that the problem will be solved?
+
+## Question 4
+
+Consider the following probability table:
+
+|       | $B$  | $B^C$ | Total |
+|-------|------|-------|-------|
+| $A$   | 0.04 | 0.06  | 0.10  |
+| $A^C$ | 0.08 | 0.82  | 0.90  |
+| Total | 0.12 | 0.88  | 1.00  |
+
+Note that $P(A) = 0.10$, $P(A \cap B) = 0.04$, and so on. Are the events $A$ and $B$ independent?
+
+## Question 5
+
+A company produces phones in three factories. In factory I, the company produces 40\% of the phones, while in factories II and III produce 30\% of the phones in each. The chance of a phone is assembled broken is 0.01 (factory I), 0.04 (factory II), and 0.03 (factory III). The phones are then taken to a warehouse. 
+
+1. If you select a phone randomly in the warehouse, what is the chance that it is broken?
+
+2. Suppose the phone you draw is broken. What is the probability that it was manufactured by factory I?
+
+## Question 6
+
+Prove that if $A$ and $B$ are independent, then:
+
+1. $A^C$ and $B^C$ are independent.
+2. $A$ and $B^C$ are independent. 
+3. $A^C$ and $B$ are independent.
+
+## Question 7
+
+Let $\bar{x} = \dfrac{\sum_{i=1}^n x_i}{n}$. Prove that:
+
+1. $\sum_{i=1}^n(x_i-\bar{x}) = 0$
+2. $\sum_{i=1}^n(x_i-\bar{x})^2 = \sum_{i=1}^n x_i^2 - n\bar{x}^2$
+
+## Question 8
+
+Let $P(k; n,p) = {n \choose k} p^k(1-p)^{n-k}$ the probability of $k$ successes in a binomial distribution with $n$ trials $p$ probability of success. Prove that:
+
+$$ P(k+1; n,p) \ = \ \dfrac{(n-k)p}{(k+1)(1-p)}P(k; n,p) $$
