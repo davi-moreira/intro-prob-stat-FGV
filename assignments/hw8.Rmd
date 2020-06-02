@@ -8,13 +8,13 @@ output: pdf_document
 
 **Due:** 06/04 at 11:59PM.
 
-**What am I expecting?** An R Markdown with the answers. Note: this one can be done in paper and pencil. If you want to do so, do the problem and take pictures of it. Put the pictures in a PDF and send it.
+**What am I expecting?** An R Markdown with the answers. Note: this one can be done in paper and pencil. If you want to do so, do the problem and take pictures of it. Put the images in a PDF and send it.
 
 **Have fun!**
 
 # Question 1
 
-A factory produce valves, with 20\% chance of a given valve be broken. The valves are sold in boxes, containing ten valves in each box. If no broken valve is found, then they sell the box for \$10.00. With one broken valve, the box costs \$8.00. With two or three, the box is sold for \$6.00. More than three valves broken, they sell the box for \$2.00. What is the mean sales price for the boxes?
+A factory produces valves, with a 20\% chance of a given valve be broken. The valves are sold in boxes containing ten valves in each box. If no broken valve is found, then they sell the box for \$10.00. With one broken valve, the box costs \$8.00. With two or three, the box is sold for \$6.00. More than three valves broken; they sell the box for \$2.00. What is the mean sales price for the boxes?
 
 # Question 2
 
