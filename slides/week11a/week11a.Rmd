@@ -2,7 +2,7 @@
 title: "Week 11a - Probability"
 subtitle: "Random Variables and Probability Distributions<html><div style='float:left'></div><hr color='#EB811B' size=1px width=800px></html>"
 author: "Umberto Mignozzetti"
-date: "May 26"
+date: "May 28"
 output: 
   xaringan::moon_reader:
     css: [default, metropolis, metropolis-fonts]
