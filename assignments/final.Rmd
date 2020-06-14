@@ -1,6 +1,6 @@
 ---
 title: "Final -- Intro to Probability and Statistics"
-author: "Your name here"
+author: "Your name here - your student number here"
 output: pdf_document
 ---
 
@@ -12,13 +12,23 @@ set.seed(97583)
 
 1. **Due:**: 06/24 at 11:59PM.
 
-2. Send both the `.Rmd` and the compiled `.pdf`
+2. Send both the `.Rmd` and the compiled `.pdf`. Make sure that you use the right places on e-Class.
 
-3. The turn-it-in is going to be on.
+3. No collaboration! The work should be yours.
 
-4. No collaboration! The work should be yours.
+4. The turn-it-in is going to be on.
 
 5. If you use Stackoverflow, or any other Google resources, please make sure to cite it. Provide the link, so we can check.
+
+6. Please double check if you picked the right question group.
+
+7. Grading parameters:
+    - `.Rmd:` have to compile to have positive grade.
+    - If not compiling a `.pdf`, then 50% penalty in the final grade.
+    - `.pdf` has to match with the `.Rmd` you submit.
+    - Coding: has to be efficient and clean
+    - Answer: has to be precise and meaningful
+    - Make sure that you revise your answers before submit the problem set.
 
 \vspace{0.2cm}
 
@@ -76,7 +86,7 @@ You should find your number and check which question groups you need to answer.
 
 \vspace{0.5cm}
 
-## Group 1 - Coethinic Voting in Africa
+## Group 1 - Coethnic Voting in Africa
 
 To explore whether a political candidate can utilize his wife's ethnicity to garner coethnic support (where a voter prefers to vote for a candidate of his/her own ethnic group, and a well-established phenomenon in many African democracies), a group of researchers used observational time-series cross sectional data from the Afrobarometer (a public attitude survey on democracy and governance in more than 35 countries in Africa, see [Afrobarometer](http://www.afrobarometer.org/)) to establish patterns of preferring a president based on a coethnic presidential wife. The researchers then conducted an experiment where they randomly reminded potential voters in Benin that the Beninoise President Yayi Boni's wife, Chantal, is of the ethnic Fon group and asked them whether they approve of Yayi Boni. This exercise is based on: 
 
@@ -126,19 +136,19 @@ What is the average willingness to vote for the president among all respondents?
 
 ### Question 3
 
-We might be concerned that we have not taken into account potentially confounding factors such as whether 1) the respondent is part of a proportionally larger or smaller ethnic group and 2) whether the respondent is also coethnic with the major opposition leader.  This is because if a respondent's ethnic group is quite small, the members might be less able to put forth a candidate of their exact ethnic label and have more incentive to support a president who, while not the same ethnicity, has a wife who does (and who therefore might have the wife's ethnic group interests at heart). It may also be that should an opposition candidate hold the same ethnicity as the respondent, such a "wife effect" might be diminished.
+We might be concerned that we have not taken into account potentially confounding factors such as whether 1) the respondent is part of a proportionally larger or smaller ethnic group and 2) whether the respondent is also coethnic with the major opposition leader. This is because if a respondent's ethnic group is quite small, the members might be less able to put forth a candidate of their exact ethnic label and have more incentive to support a president who, while not the same ethnicity, has a wife who does (and who therefore might have the wife's ethnic group interests at heart). It may also be that should an opposition candidate hold the same ethnicity as the respondent, such a "wife effect" might be diminished.
 
 To investigate this possibility, subset the `afb` data to adjust for potential confounding variable `ethnicpercent2` created in the previous question. Consider the group of individuals who are of smaller than average ethnic groups. What is the average willingness to vote between wife coethnics and wife non-coethnics?  Next, consider only the group of individuals who are not only from smaller than average ethnic groups but are also not coethnic with the opponent. What is the difference in average willingness to vote between wife coethnics and wife non-coethnics now? What do these results tell us about the relationship between the "wife effect"?
 
 ### Question 4
 
-The Afrobarometer data, while rich and inclusive of many countries, is observational data.  Thus, it is difficult to estimate the effect of *treatment*, which is coethnicity with the president's wife in the current application. To address this difficulty, the authors of the study conduct a survey experiment in Benin, a small democracy on the western coast of the African continent. It is also a country represented in the Afrobarometer data set. The president at the time of the survey was Yayi Boni, who is of two ethnicities, Nago and Bariba. His wife Chantal is Fon. For the experiment, the authors randomly surveyed adult walkers on the streets of Cotonou (the capital of Benin). Respondents were asked some personal information, such as gender and age, as well as their ethnicity. Then, respondents were randomly assigned to either the control or one of two treatment groups (*Wife* and *Fon Wife*):
+The Afrobarometer data, while rich and inclusive of many countries, is observational data. Thus, it is difficult to estimate the effect of *treatment*, which is coethnicity with the president's wife in the current application. To address this difficulty, the authors of the study conduct a survey experiment in Benin, a small democracy on the western coast of the African continent. It is also a country represented in the Afrobarometer data set. The president at the time of the survey was Yayi Boni, who is of two ethnicities, Nago and Bariba. His wife Chantal is Fon. For the experiment, the authors randomly surveyed adult walkers on the streets of Cotonou (the capital of Benin). Respondents were asked some personal information, such as gender and age, as well as their ethnicity. Then, respondents were randomly assigned to either the control or one of two treatment groups (*Wife* and *Fon Wife*):
 
 In the control condition, respondents were read the following short biographical sketchof Yayi Boni, where there is no indication of the president's wife, Chantal: 
 
 > Yayi Boni became President of Benin on April 6, 2006 and was just re-elected for a second term. He has led a presidential campaign based on economic growth and suppressing corruption. However, some critics claim that the country's economic growth has been disappointing, and that Boni's administration is, itself, corrupt. 
 
-In the first treatment group, *Wife*, respondents were read the same passage as the control group, except the president's wife Chantal is explicitly mentioned at the beginning.  That is, the above script is preceded with "Accompanied by his wife, Chantal".  In the second treatment group, *Fon Wife*, respondents were read again the same passage, except the ethnicity of Chantal is explicitly mentioned with the script starting by "Accompnaied by his Fon wife, Chantal".
+In the first treatment group, *Wife*, respondents were read the same passage as the control group, except the president's wife Chantal is explicitly mentioned at the beginning.  That is, the above script is preceded with "Accompanied by his wife, Chantal". In the second treatment group, *Fon Wife*, respondents were read again the same passage, except the ethnicity of Chantal is explicitly mentioned with the script starting by "Accompnaied by his Fon wife, Chantal".
 
 Now we turn to the `benin` dataset. Does being reminded that you are coethnic with the president's wife increase your willingness to vote for the president? The data has already been subsetted from the original experiment data so it contains only respondents who are not coethnic with the president (why would this be important to consider?). Take a closer look at the `ethnicity` variable by creating a table. How many ethnic groups are there represented in this dataset? Compare the mean willingness to vote for the president between the *Fon Wife* and control group. Briefly interpret the result. Was it important for the researchers to add a treatment with just the mention of the president's wife without her ethnicity?  Why or why not?
 
@@ -163,7 +173,6 @@ To isolate the causal effect of a criminal record for black and white applicants
 To examine the role of a criminal record, Pager hired a pair of white men and a pair of black men and instructed them to apply for existing entry-level jobs in the city of Milwaukee. The men in each pair were matched on a number of dimensions, including physical appearance and self-presentation. As much as possible, the only difference between the two was that Pager randomly varied which individual in the pair would indicate to potential employers that he had a criminal record. Further, each week, the pair alternated which applicant would present himself as an ex-felon. To determine how incarceration and race influence employment chances, she compared callback rates among applicants with and without a criminal background and calculated how those callback rates varied by race.
 
 In the data you will use `ciminalrecord.csv` nearly all these cases are present, but 4 cases have been redacted. As a result, your findings may differ slightly from those in the paper. The names and descriptions of variables are shown below. You may not need to use all of these variables for this activity. We’ve kept these unnecessary variables in the dataset because it is common to receive a dataset with much more information than you need.
-
 
 ------------------------------------------------------------------------------------------
 Name                        Description
@@ -254,12 +263,11 @@ How does performance on fourth grade reading and math tests for those students a
 
 ### Question 3
 
-Instead of comparing just average scores of reading and math tests between those students assigned to small classes and those assigned to regular-sized classes, look at the entire range of
-possible scores.  To do so, compare a high score, defined as the 66th percentile, and a low score (the 33rd percentile) for small classes with the corresponding score for regular classes. These are examples of *quantile treatment effects*.  Does this analysis add anything to the analysis based on mean in the previous question?
+Instead of comparing just average scores of reading and math tests between those students assigned to small classes and those assigned to regular-sized classes, look at the entire range of possible scores. To do so, compare a high score, defined as the 66th percentile, and a low score (the 33rd percentile) for small classes with the corresponding score for regular classes. These are examples of *quantile treatment effects*. Does this analysis add anything to the analysis based on mean in the previous question?
 
 ### Question 4
 
-We examine whether the STAR program reduced the achievement gaps across different racial groups.  Begin by comparing the average reading and math test scores between white and minority students (i.e., Blacks and hispanics) among those students who were assigned to regular classes with no aid.  Conduct the same comparison among those students who were assigned to small classes. Give a brief substantive interpretation of the results of your analysis.
+We examine whether the STAR program reduced the achievement gaps across different racial groups.  Begin by comparing the average reading and math test scores between white and minority students (i.e., Blacks and hispanics) among those students who were assigned to regular classes with no aid. Conduct the same comparison among those students who were assigned to small classes. Give a brief substantive interpretation of the results of your analysis.
 
 ### Question 5
 
@@ -273,8 +281,7 @@ We consider the long term effects of kindergarden class size. Compare high schoo
 
 ## Group 4 - Bias in Self-reported Turnout
 
-Surveys are frequently used to measure political behavior such as voter turnout, but some researchers are concerned about the accuracy of self-reports. In particular, they worry about possible *social desirability bias* where in post-election surveys, respondents who did not vote in an election lie about not having voted because they may feel that they should have voted.  Is such a bias present in the American National Election Studies (ANES)?  The ANES is a nation-wide survey that has been conducted for every election since 1948. The ANES conducts face-to-face interviews with a nationally representative sample of adults. The table below displays the names and descriptions
-of variables in the `turnout.csv` data file.
+Surveys are frequently used to measure political behavior such as voter turnout, but some researchers are concerned about the accuracy of self-reports. In particular, they worry about possible *social desirability bias* where in post-election surveys, respondents who did not vote in an election lie about not having voted because they may feel that they should have voted.  Is such a bias present in the American National Election Studies (ANES)?  The ANES is a nation-wide survey that has been conducted for every election since 1948. The ANES conducts face-to-face interviews with a nationally representative sample of adults. The table below displays the names and descriptions of variables in the `turnout.csv` data file.
 
 --------------------------------------------------------------------------------
  Name                 Description
@@ -298,7 +305,7 @@ of variables in the `turnout.csv` data file.
 
 ### Question 1
 
-Calculate the turnout rate based on the voting age population or VAP. Note that for this data set, we must add the total number of eligible overseas voters since the *VAP* variable does not include these individuals in the count. Next, calculate the turnout rate using the voting eligible population or VEP.  What difference do you observe?
+Calculate the turnout rate based on the voting age population or VAP. Note that for this data set, we must add the total number of eligible overseas voters since the *VAP* variable does not include these individuals in the count. Next, calculate the turnout rate using the voting eligible population or VEP. What difference do you observe?
 
 ### Question 2
 
@@ -326,13 +333,12 @@ The ANES does not interview overseas voters and prisoners. Calculate an adjustme
 
 A researcher conducted a randomized field experiment assessing the extent to which individuals living in suburban communities around Boston, Massachusetts, and their views were affected by exposure to demographic change. 
 
-This exercise is based on: Enos, R. D. 2014. “[Causal Effect of 
-Intergroup Contact on Exclusionary Attitudes.](http://dx.doi.org/10.1073/pnas.1317670111)” 
+This exercise is based on: Enos, R. D. 2014. “[Causal Effect of Intergroup Contact on Exclusionary Attitudes.](http://dx.doi.org/10.1073/pnas.1317670111)” 
 *Proceedings of the National Academy of Sciences* 111(10): 3699–3704.
 
 Subjects in the experiment were individuals riding on the commuter rail line and overwhelmingly white. Every morning, multiple trains pass through various stations in suburban communities that were used for this study. For pairs of trains leaving the same station at roughly the same time, one was randomly assigned to receive the treatment and one was designated as a control. By doing so all the benefits of randomization apply for this dataset.
 
-The treatment in this experiment was the presence of two native Spanish-speaking  'confederates' (a term used in experiments to indicate that these individuals worked for the researcher, unbeknownst to the subjects) on the platform each morning prior to the train's arrival. The presence of these confederates, who would appear as Hispanic foreigners  to the subjects, was intended to simulate the kind of demographic change anticipated for the United States in coming years. For those individuals in the control group, no such confederates were present on the platform. The treatment was administered for 10 days.  Participants were asked questions related to immigration policy both before the experiment started and after the experiment had ended.  The names and descriptions of variables in the data set `boston.csv` are:
+The treatment in this experiment was the presence of two native Spanish-speaking 'confederates' (a term used in experiments to indicate that these individuals worked for the researcher, unbeknownst to the subjects) on the platform each morning prior to the train's arrival. The presence of these confederates, who would appear as Hispanic foreigners  to the subjects, was intended to simulate the kind of demographic change anticipated for the United States in coming years. For those individuals in the control group, no such confederates were present on the platform. The treatment was administered for 10 days.  Participants were asked questions related to immigration policy both before the experiment started and after the experiment had ended. The names and descriptions of variables in the data set `boston.csv` are:
 
  -------------------- ----------------------------------------------------------
  Name                 Description
@@ -378,7 +384,7 @@ The treatment in this experiment was the presence of two native Spanish-speaking
 
 ### Question 1
 
-Load the dataset and extract a summary of it. Use the function `summary(.)`.
+Load the dataset and summarize the variables. Use the function `summary(.)`.
 
 ### Question 2
 
@@ -394,7 +400,7 @@ Does having attended college influence the effect of being exposed to 'outsiders
 
 ### Question 5
 
-Repeat the same analysis as in the previous question but this time with respect to age and ideology.  For age, divide the data based on its quartile and compute the average treatment effect within each of the resulting four groups.  For ideology, compute the average treatment effect within each value.  What patterns do you observe? Give a brief substantive interpretation of the results.
+Repeat the same analysis as in the previous question but this time with respect to age and ideology. For age, divide the data based on its quartile and compute the average treatment effect within each of the resulting four groups. For ideology, compute the average treatment effect within each value. What patterns do you observe? Give a brief substantive interpretation of the results.
 
 \vspace{0.2cm}
 
@@ -472,7 +478,7 @@ Next, we are going to consider the design of this study. The original authors as
 
 ## Group 7 - Diverse Mechanisms of Migration
 
-Scholars across disciplines have identified several mechanisms that cause people to migrate. Some propose an "income maximizer" hypothesis and argue that individuals migrate because they are drawn to higher wages in receiving countries. Others argue that it is risk and uncertainty in the sending countries--such as low-wages and lack of market opportunities-- that is driving migration patterns. They offer a "risk diversifier" hypothesis. Others still hypothesize that growing ties among individuals in receiving and sending countries fosters immigration, and advocate for analyses that focus on "network migrants." In this exercise, rather than examining them as competing hypotheses, we examine these theories together and test whether each represents the profile of a different stream of migrants from Mexico to the U.S. in recent decades. Using cluster analysis, we attempt to discover the "configurations of various attributes that characterize different migrant types."  This exercise is based on the following article: 
+Scholars across disciplines have identified several mechanisms that cause people to migrate. Some propose an "income maximizer" hypothesis and argue that individuals migrate because they are drawn to higher wages in receiving countries. Others argue that it is risk and uncertainty in the sending countries--such as low-wages and lack of market opportunities-- that is driving migration patterns. They offer a "risk diversifier" hypothesis. Others still hypothesize that growing ties among individuals in receiving and sending countries fosters immigration, and advocate for analyses that focus on "network migrants." In this exercise, rather than examining them as competing hypotheses, we examine these theories together and test whether each represents the profile of a different stream of migrants from Mexico to the U.S. in recent decades. Using cluster analysis, we attempt to discover the "configurations of various attributes that characterize different migrant types." This exercise is based on the following article: 
 
 Garip, Filiz. 2012. "[Discovering Diverse Mechanisms of Migration: The Mexico–US Stream 1970–2000](https://dx.doi.org/10.1111/j.1728-4457.2012.00510.x)." *Population and Development Review*, Vol. 38, No. 3, pp. 393-433.
 
@@ -543,7 +549,7 @@ We'll focus on the variables: `year`, `educ`, `log_nrooms`, `log_landval`, `n_bu
 
 ### Question 4
 
-Fit the k-means clustering algorithm with *three* clusters, using the scaled variables from the data set with no missing values. Insert the code `set.seed(2016)` right before your cluster analysis so that you can compare your results from the kmeans clustering to exercise solutions later.  How many observations are assigned to each cluster? Each cluster has a center. What do the centers of these clusters represent? Interpret the type of migrant described by cluster 1. To help witih interpretability, you can also calculate the mean value of the variables for each cluster, using their original scale.  Repeat the cluster analysis. This time with *four* centers. How are the two results different? Is there one you prefer? 
+Fit the k-means clustering algorithm with *three* clusters, using the scaled variables from the data set with no missing values. Insert the code `set.seed(2016)` right before your cluster analysis so that you can compare your results from the kmeans clustering to exercise solutions later.  How many observations are assigned to each cluster? Each cluster has a center. What do the centers of these clusters represent? Interpret the type of migrant described by cluster 1. To help witih interpretability, you can also calculate the mean value of the variables for each cluster, using their original scale. Repeat the cluster analysis. This time with *four* centers. How are the two results different? Is there one you prefer? 
 
 ### Question 5
 
@@ -559,8 +565,7 @@ Do these different clusters represent different temporal trends in migration fro
 
 Researchers have theorized that natural resources may have an
 inhibiting effect on the democratization process.  Although 
-there are multiple explanations as to why
-this might be the case, one hypothesis posits that governments in countries with large natural resource endowments (like oil) are able to fund their operations without taxing civilians. Since representation (and other democratic institutions) are a compromise offered by governments in exchange for tax revenue, resource-rich countries do not need to make this trade.  In this exercise, we will not investigate causal effects of oil on democracy.  Instead, weexamine whether the association between oil and democracy is consistent with the aforementioned hypothesis.  
+there are multiple explanations as to why this might be the case, one hypothesis posits that governments in countries with large natural resource endowments (like oil) are able to fund their operations without taxing civilians. Since representation (and other democratic institutions) are a compromise offered by governments in exchange for tax revenue, resource-rich countries do not need to make this trade. In this exercise, we will not investigate causal effects of oil on democracy.  Instead, we examine whether the association between oil and democracy is consistent with the aforementioned hypothesis.  
 
 This exercise is in part based on Michael L. Ross. (2001). 'Does Oil Hinder Democracy?' *World Politics*, 53:3, pp.325-361.
 
@@ -606,7 +611,7 @@ Using the clusters obtained above, modify the scatterplot between logged GDP per
 
 ### Question 5
 
-Repeat the previous two questions but this time with three clusters instead of two.  How are the results different?  Which clustering model would you prefer and why?
+Repeat the previous two questions but this time with three clusters instead of two. How are the results different? Which clustering model would you prefer and why?
 
 \vspace{0.2cm}
 
@@ -616,7 +621,7 @@ Repeat the previous two questions but this time with three clusters instead of t
 
 ## Group 9 - Poverty and Economic Decision-Making
 
-Do changes in one's financial circumstances affect one's decision-making process and cognitive capacity? In an experimental study, researchers randomly selected a group of US respondents to be surveyed before their payday and another group to be surveyed after their payday. Under this design, the respondents of the `Before Payday` group are more likely to be financially strained than those of the `After Payday` group.  The researchers were interested in investigating whether or not changes in people's financial circumstances affect their decision making and cognitive performance.  Other researchers have found that scarcity induce an additional mental load that impedes cognitive capacity.  This exercise is based on:
+Do changes in one's financial circumstances affect one's decision-making process and cognitive capacity? In an experimental study, researchers randomly selected a group of US respondents to be surveyed before their payday and another group to be surveyed after their payday. Under this design, the respondents of the `Before Payday` group are more likely to be financially strained than those of the `After Payday` group.  The researchers were interested in investigating whether or not changes in people's financial circumstances affect their decision making and cognitive performance.  Other researchers have found that scarcity induce an additional mental load that impedes cognitive capacity. This exercise is based on:
 
 Carvalho, Leandro S., Meier, Stephen, and Wang, Stephanie W. (2016). "[Poverty and economic decision-making: Evidence from changes in financial resources at payday.](http://dx.doi.org/10.1257/aer.20140481)" *American Economic Review*, Vol. 106, No. 2, pp. 260-284. 
 
@@ -849,7 +854,7 @@ We use three data sets in this exercises, two of which were already introduced i
 
 ### Question 1
 
-Use Bayes' Rule to find a formula for the probability that a voter belongs to a given racial group conditional on their age, gender, surname, and residence location.  Given the data sets we have, can we use this formula to predict each voter's race?  If the answer is yes, briefly explain how you would make the prediction. If the answer is no, explain why you cannot apply the formula you derived.
+Use Bayes' Rule to find a formula for the probability that a voter belongs to a given racial group conditional on their age, gender, surname, and residence location.  Given the data sets we have, can we use this formula to predict each voter's race? If the answer is yes, briefly explain how you would make the prediction. If the answer is no, explain why you cannot apply the formula you derived.
 
 ### Question 2
 
@@ -862,7 +867,7 @@ $$
 
 ### Question 3
 
- Using the formula derived in the previous question, we wish to compute the predicted probability that a voter belongs to a given racial group, conditional on their age and gender as well as their surname and residence location.  Provide a step-by-step explanation of how to do this computation using the data. Hint: you will need to modify the formula without invoking an additional assumption such that all quantities can be computed from the data sets we have. The definition of conditional probability and the law of total probability might be useful.
+Using the formula derived in the previous question, we wish to compute the predicted probability that a voter belongs to a given racial group, conditional on their age and gender as well as their surname and residence location.  Provide a step-by-step explanation of how to do this computation using the data. Hint: you will need to modify the formula without invoking an additional assumption such that all quantities can be computed from the data sets we have. The definition of conditional probability and the law of total probability might be useful.
 
 ### Question 4
 
@@ -922,7 +927,6 @@ Write an R function that randomly configures the plugboard. This function will t
 
 Then, write an R function that encodes and decodes a message given a plugboard configuration set by the `plugboard` function from the previous question.  This function should take the output of the `plugboard` function as well as a message to be encoded (decoded) as inputs, and return an encoded (decoded) message.  You may wish to use the `gsub` function, which replaces a pattern in a character string with another specified pattern. The `tolower` function, which makes
 characters in a character vector lowercase, and `toupper` function, which capitalizes characters in a character vector, can also help.
-
 
 \vspace{0.2cm}
 
@@ -1125,7 +1129,7 @@ Finally, let's approximate the estimation strategy used by Broockman and Kalla i
 
 In this group, we consider the effect of a change in the price of agricultural goods whose production and cultivation are dominated by either men or women. 
 
-This exercise is based on: Qian, Nancy. 2008. “[Missing Women and the Price of Tea in China: The Effect of Sex-Specific Earnings on Sex Imbalance.](http://dx.doi.org/10.1162/qjec.2008.123.3.1251)” *Quarterly Journal of Economics* 123(3): 1251–85. 
+These exercises are based on: Qian, Nancy. 2008. “[Missing Women and the Price of Tea in China: The Effect of Sex-Specific Earnings on Sex Imbalance.](http://dx.doi.org/10.1162/qjec.2008.123.3.1251)” *Quarterly Journal of Economics* 123(3): 1251–85.
 
 Our data come from China, where centrally planned production targets during the Maoist era led to changes in the prices of major staple crops. We focus here on tea, the production and cultivation of which required a large female labor force, as well as orchard fruits, for which the labor force was overwhelmingly male. We use price increases brought on by government policy change in 1979 as a proxy for increases in sex-specific income, and ask the following question: Do changes in sex-specific income alter the incentives for Chinese families to have children of one gender over another? The CSV data file, `chinawomen.csv`, contains the variables shown in the table below, with each observation representing a particular Chinese county in a given year. Note that `post` is an indicator variable that takes takes 1 in a year following the policy change and 0 in a year before the policy change.
    
