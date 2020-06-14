@@ -10,7 +10,7 @@ set.seed(97583)
 
 # Instructions
 
-1. **Due:**: 06/25 at 11:59PM.
+1. **Due:**: 06/24 at 11:59PM.
 
 2. Send both the `.Rmd` and the compiled `.pdf`
 
